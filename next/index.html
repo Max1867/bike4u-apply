@@ -64,8 +64,9 @@
   <h2 style="color:#f59e0b;margin:0 0 6px;font-size:17px"><span id="supName"></span> — <span data-t="needMore"></span></h2>
   <p style="margin:0;white-space:pre-line" id="supReason"></p>
 </div>
-<div class="card deal">
-  <div class="row"><span data-t="lBike"></span><b id="bikeName"></b></div>
+<div class="card">
+  <h3 style="margin:0 0 8px" data-t="chooseBike"></h3>
+  <div id="modelCards"></div>
 </div>
 
 <div class="card" id="contractCard">
@@ -239,7 +240,7 @@ const I18N = {
     noteLabel: "Message for the Bike 4 U team (optional)", notePh: "Anything you'd like to add...",
     tcsTitle: "Terms & Conditions", tcsRead: "Please read the full contract terms before applying:",
     tcsOpen: "📄 Open the Terms & Conditions (PDF)",
-    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.", chooseContract: "Choose your contract", rtoTitle: "Rent to Own", rentalTitle: "Rental Only", noRtoStock: "Currently no new bikes available for Rent to Own — please check back soon or apply for Rental.", noRentalStock: "Currently no rental bikes available — please check back soon.", errContract: "Please choose Rent to Own or Rental.", lowStock: "⚠️ Please note: only {n} bike(s) currently available for this option — there may be other applications ahead of yours, so complete your application as soon as possible.",
+    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.", chooseContract: "Choose your contract", rtoTitle: "Rent to Own", rentalTitle: "Rental Only", noRtoStock: "Currently no new bikes available for Rent to Own — please check back soon or apply for Rental.", noRentalStock: "Currently no rental bikes available — please check back soon.", errContract: "Please choose Rent to Own or Rental.", chooseBike: "Choose your bike", availN: "{n} available", errBike: "Please choose a bike first.", lowStock: "⚠️ Please note: only {n} bike(s) currently available for this option — there may be other applications ahead of yours, so complete your application as soon as possible.",
     submit: "Submit My Application", send: "Send to Bike 4 U", submitting: "Submitting…",
     uploadingBtn: "Uploading documents…", retryBtn: "Retry failed uploads",
     uploading: "Uploading…", uploaded: "✓ Uploaded", tooBig: "File too big (max 8MB)",
@@ -288,7 +289,7 @@ const I18N = {
     noteLabel: "Message pour l'équipe Bike 4 U (facultatif)", notePh: "Ce que vous souhaitez ajouter...",
     tcsTitle: "Termes et conditions", tcsRead: "Veuillez lire les conditions complètes du contrat avant de postuler :",
     tcsOpen: "📄 Ouvrir les termes et conditions (PDF)",
-    tcsAccept: "J'ai lu et j'accepte les termes et conditions", maintAck: "Je comprends que l'entretien, les r\u00e9parations g\u00e9n\u00e9rales et la maintenance sont \u00e0 ma charge (le conducteur).", errMaint: "Veuillez cocher que vous comprenez que les r\u00e9parations et l'entretien sont \u00e0 votre charge.", drivingAck: "Je reconnais que la mauvaise conduite ou plus de 3 amendes pour excès de vitesse entraînera l’annulation automatique de mon contrat et la restitution de la moto.", errDriving: "Veuillez cocher que vous acceptez la règle d’annulation pour mauvaise conduite / excès de vitesse.", chooseContract: "Choisissez votre contrat", rtoTitle: "Rent to Own (location-vente)", rentalTitle: "Location simple", noRtoStock: "Aucune moto neuve disponible pour le Rent to Own actuellement — revenez bientôt ou choisissez la location.", noRentalStock: "Aucune moto de location disponible actuellement — revenez bientôt.", errContract: "Veuillez choisir Rent to Own ou Location.", lowStock: "⚠️ Veuillez noter : seulement {n} moto(s) actuellement disponible(s) pour cette option — d'autres candidatures peuvent être devant la vôtre, alors complétez la vôtre au plus vite.",
+    tcsAccept: "J'ai lu et j'accepte les termes et conditions", maintAck: "Je comprends que l'entretien, les r\u00e9parations g\u00e9n\u00e9rales et la maintenance sont \u00e0 ma charge (le conducteur).", errMaint: "Veuillez cocher que vous comprenez que les r\u00e9parations et l'entretien sont \u00e0 votre charge.", drivingAck: "Je reconnais que la mauvaise conduite ou plus de 3 amendes pour excès de vitesse entraînera l’annulation automatique de mon contrat et la restitution de la moto.", errDriving: "Veuillez cocher que vous acceptez la règle d’annulation pour mauvaise conduite / excès de vitesse.", chooseContract: "Choisissez votre contrat", rtoTitle: "Rent to Own (location-vente)", rentalTitle: "Location simple", noRtoStock: "Aucune moto neuve disponible pour le Rent to Own actuellement — revenez bientôt ou choisissez la location.", noRentalStock: "Aucune moto de location disponible actuellement — revenez bientôt.", errContract: "Veuillez choisir Rent to Own ou Location.", chooseBike: "Choisissez votre moto", availN: "{n} disponible(s)", errBike: "Veuillez d’abord choisir une moto.", lowStock: "⚠️ Veuillez noter : seulement {n} moto(s) actuellement disponible(s) pour cette option — d'autres candidatures peuvent être devant la vôtre, alors complétez la vôtre au plus vite.",
     submit: "Envoyer ma candidature", send: "Envoyer à Bike 4 U", submitting: "Envoi en cours…",
     uploadingBtn: "Envoi des documents…", retryBtn: "Réessayer les envois échoués",
     uploading: "Envoi…", uploaded: "✓ Envoyé", tooBig: "Fichier trop volumineux (max 8 Mo)",
@@ -337,7 +338,7 @@ const I18N = {
     noteLabel: "Ujumbe kwa timu ya Bike 4 U (hiari)", notePh: "Chochote unachotaka kuongeza...",
     tcsTitle: "Vigezo na Masharti", tcsRead: "Tafadhali soma masharti kamili ya mkataba kabla ya kuomba:",
     tcsOpen: "📄 Fungua Vigezo na Masharti (PDF)",
-    tcsAccept: "Nimesoma na ninakubali Vigezo na Masharti", maintAck: "Ninaelewa kuwa huduma, matengenezo ya kawaida na utunzaji ni jukumu langu (dereva).", errMaint: "Tafadhali weka alama kuwa unaelewa matengenezo na utunzaji ni jukumu lako.", drivingAck: "Ninakiri kuwa uendeshaji mbaya au kupata faini zaidi ya 3 za mwendo kasi kutasababisha kufutwa kiotomatiki kwa mkataba wangu na pikipiki kurudishwa.", errDriving: "Tafadhali weka alama kuwa unakubali sharti la kufutwa kwa uendeshaji mbaya / faini za mwendo kasi.", chooseContract: "Chagua mkataba wako", rtoTitle: "Rent to Own (kununua polepole)", rentalTitle: "Kukodisha tu", noRtoStock: "Kwa sasa hakuna pikipiki mpya za Rent to Own — rudi hivi karibuni au omba kukodisha.", noRentalStock: "Kwa sasa hakuna pikipiki za kukodisha — rudi hivi karibuni.", errContract: "Tafadhali chagua Rent to Own au Kukodisha.", lowStock: "⚠️ Tafadhali kumbuka: kuna pikipiki {n} tu zinazopatikana kwa chaguo hili — huenda kuna maombi mengine kabla ya lako, kamilisha maombi yako haraka iwezekanavyo.",
+    tcsAccept: "Nimesoma na ninakubali Vigezo na Masharti", maintAck: "Ninaelewa kuwa huduma, matengenezo ya kawaida na utunzaji ni jukumu langu (dereva).", errMaint: "Tafadhali weka alama kuwa unaelewa matengenezo na utunzaji ni jukumu lako.", drivingAck: "Ninakiri kuwa uendeshaji mbaya au kupata faini zaidi ya 3 za mwendo kasi kutasababisha kufutwa kiotomatiki kwa mkataba wangu na pikipiki kurudishwa.", errDriving: "Tafadhali weka alama kuwa unakubali sharti la kufutwa kwa uendeshaji mbaya / faini za mwendo kasi.", chooseContract: "Chagua mkataba wako", rtoTitle: "Rent to Own (kununua polepole)", rentalTitle: "Kukodisha tu", noRtoStock: "Kwa sasa hakuna pikipiki mpya za Rent to Own — rudi hivi karibuni au omba kukodisha.", noRentalStock: "Kwa sasa hakuna pikipiki za kukodisha — rudi hivi karibuni.", errContract: "Tafadhali chagua Rent to Own au Kukodisha.", chooseBike: "Chagua pikipiki yako", availN: "{n} zinapatikana", errBike: "Tafadhali chagua pikipiki kwanza.", lowStock: "⚠️ Tafadhali kumbuka: kuna pikipiki {n} tu zinazopatikana kwa chaguo hili — huenda kuna maombi mengine kabla ya lako, kamilisha maombi yako haraka iwezekanavyo.",
     submit: "Tuma Maombi Yangu", send: "Tuma kwa Bike 4 U", submitting: "Inatuma…",
     uploadingBtn: "Inapakia nyaraka…", retryBtn: "Jaribu tena zilizoshindikana",
     uploading: "Inapakia…", uploaded: "✓ Imepakiwa", tooBig: "Faili kubwa mno (max 8MB)",
@@ -386,7 +387,7 @@ const I18N = {
     noteLabel: "Ubutumwa ku murwi wa Bike 4 U (si itegeko)", notePh: "Ico wipfuza kwongerako...",
     tcsTitle: "Amategeko n'Ibisabwa", tcsRead: "Turakwinginze usome amategeko yose y'amasezerano imbere yo gusaba:",
     tcsOpen: "📄 Fungura Amategeko n'Ibisabwa (PDF)",
-    tcsAccept: "Ndasomye kandi ndemera Amategeko n'Ibisabwa", maintAck: "Ndatahura ko gusanura, ugukanika no kubungabunga ipikipiki ari ibanga ryanje (umushoferi).", errMaint: "Emeza ko utahura ko ugukanika no kubungabunga ari ibanga ryawe.", drivingAck: "Ndemera ko ugutwara nabi canke guhabwa amande arenga 3 y’umuvuduko bizotuma amasezerano yanje ahagarikwa ubwayo n’ipikipiki igasubizwa.", errDriving: "Emeza ko wemera itegeko ryo guhagarika kubera ugutwara nabi / amande y’umuvuduko.", chooseContract: "Hitamwo amasezerano yawe", rtoTitle: "Rent to Own (kugura buhoro)", rentalTitle: "Ukukodesha gusa", noRtoStock: "Ubu nta pikipiki nshasha za Rent to Own zihari — garuka vuba canke usabe ugukodesha.", noRentalStock: "Ubu nta pikipiki zo gukodesha zihari — garuka vuba.", errContract: "Hitamwo Rent to Own canke Ugukodesha.", lowStock: "⚠️ Menya neza: hari ipikipiki {n} gusa ziboneka kuri iri hitamwo — hashobora kuba hari ubundi busabe imbere y'ubwawe, nuko rangiza ubusabe bwawe ningoga.",
+    tcsAccept: "Ndasomye kandi ndemera Amategeko n'Ibisabwa", maintAck: "Ndatahura ko gusanura, ugukanika no kubungabunga ipikipiki ari ibanga ryanje (umushoferi).", errMaint: "Emeza ko utahura ko ugukanika no kubungabunga ari ibanga ryawe.", drivingAck: "Ndemera ko ugutwara nabi canke guhabwa amande arenga 3 y’umuvuduko bizotuma amasezerano yanje ahagarikwa ubwayo n’ipikipiki igasubizwa.", errDriving: "Emeza ko wemera itegeko ryo guhagarika kubera ugutwara nabi / amande y’umuvuduko.", chooseContract: "Hitamwo amasezerano yawe", rtoTitle: "Rent to Own (kugura buhoro)", rentalTitle: "Ukukodesha gusa", noRtoStock: "Ubu nta pikipiki nshasha za Rent to Own zihari — garuka vuba canke usabe ugukodesha.", noRentalStock: "Ubu nta pikipiki zo gukodesha zihari — garuka vuba.", errContract: "Hitamwo Rent to Own canke Ugukodesha.", chooseBike: "Hitamwo ipikipiki yawe", availN: "{n} zirahari", errBike: "Banza uhitemwo ipikipiki.", lowStock: "⚠️ Menya neza: hari ipikipiki {n} gusa ziboneka kuri iri hitamwo — hashobora kuba hari ubundi busabe imbere y'ubwawe, nuko rangiza ubusabe bwawe ningoga.",
     submit: "Rungika Ubusabe Bwanje", send: "Rungika kuri Bike 4 U", submitting: "Birarungikwa…",
     uploadingBtn: "Ivyangombwa birapakirwa…", retryBtn: "Subira ugerageze ivyanse",
     uploading: "Birapakirwa…", uploaded: "✓ Vyapakiwe", tooBig: "Idosiye ni nini cane (max 8MB)",
@@ -435,7 +436,7 @@ const I18N = {
     noteLabel: "Uthenga kwa gulu la Bike 4 U (mukafuna)", notePh: "Chilichonse chomwe mukufuna kuonjezera...",
     tcsTitle: "Malamulo ndi Zikhalidwe", tcsRead: "Chonde werengani malamulo onse a mgwirizano musanapemphe:",
     tcsOpen: "📄 Tsegulani Malamulo ndi Zikhalidwe (PDF)",
-    tcsAccept: "Ndawerenga ndipo ndikuvomereza Malamulo ndi Zikhalidwe", maintAck: "Ndikumvetsa kuti kukonza, kukonzanso kwa wamba ndi kusamalira njinga ndi udindo wanga (woyendetsa).", errMaint: "Chonde sankhani kuti mukumvetsa kuti kukonza ndi kusamalira ndi udindo wanu.", drivingAck: "Ndikuvomereza kuti kuyendetsa moyipa kapena kulandira zilango zoposa 3 za liwiro kudzachititsa kuti mgwirizano wanga uthe zokha ndipo njinga ibwezedwe.", errDriving: "Chonde sankhani kuti mukuvomereza lamulo lothetsa chifukwa cha kuyendetsa moyipa / zilango za liwiro.", chooseContract: "Sankhani mgwirizano wanu", rtoTitle: "Rent to Own (kugula pang'onopang'ono)", rentalTitle: "Kubwereka kokha", noRtoStock: "Pakali pano palibe njinga zatsopano za Rent to Own — bwerani posachedwa kapena pemphani kubwereka.", noRentalStock: "Pakali pano palibe njinga zobwereka — bwerani posachedwa.", errContract: "Chonde sankhani Rent to Own kapena Kubwereka.", lowStock: "⚠️ Chonde dziwani: pali njinga {n} zokha pa chisankho ichi — pakhoza kukhala mapempho ena patsogolo pa lanu, choncho malizani pempho lanu mwachangu.",
+    tcsAccept: "Ndawerenga ndipo ndikuvomereza Malamulo ndi Zikhalidwe", maintAck: "Ndikumvetsa kuti kukonza, kukonzanso kwa wamba ndi kusamalira njinga ndi udindo wanga (woyendetsa).", errMaint: "Chonde sankhani kuti mukumvetsa kuti kukonza ndi kusamalira ndi udindo wanu.", drivingAck: "Ndikuvomereza kuti kuyendetsa moyipa kapena kulandira zilango zoposa 3 za liwiro kudzachititsa kuti mgwirizano wanga uthe zokha ndipo njinga ibwezedwe.", errDriving: "Chonde sankhani kuti mukuvomereza lamulo lothetsa chifukwa cha kuyendetsa moyipa / zilango za liwiro.", chooseContract: "Sankhani mgwirizano wanu", rtoTitle: "Rent to Own (kugula pang'onopang'ono)", rentalTitle: "Kubwereka kokha", noRtoStock: "Pakali pano palibe njinga zatsopano za Rent to Own — bwerani posachedwa kapena pemphani kubwereka.", noRentalStock: "Pakali pano palibe njinga zobwereka — bwerani posachedwa.", errContract: "Chonde sankhani Rent to Own kapena Kubwereka.", chooseBike: "Sankhani njinga yanu", availN: "{n} zilipo", errBike: "Chonde sankhani njinga kaye.", lowStock: "⚠️ Chonde dziwani: pali njinga {n} zokha pa chisankho ichi — pakhoza kukhala mapempho ena patsogolo pa lanu, choncho malizani pempho lanu mwachangu.",
     submit: "Tumizani Pempho Langa", send: "Tumizani kwa Bike 4 U", submitting: "Likutumizidwa…",
     uploadingBtn: "Zikalata zikukwezedwa…", retryBtn: "Yesaninso zomwe zalephera",
     uploading: "Ikukwezedwa…", uploaded: "✓ Yakwezedwa", tooBig: "Fayilo yayikulu kwambiri (max 8MB)",
@@ -484,7 +485,7 @@ const I18N = {
     noteLabel: "Shoko kuchikwata cheBike 4 U (kana uchida)", notePh: "Chero chaunoda kuwedzera...",
     tcsTitle: "Mitemo neMirayiridzo", tcsRead: "Ndapota verenga mitemo yese yechibvumirano usati wakumbira:",
     tcsOpen: "📄 Vhura Mitemo neMirayiridzo (PDF)",
-    tcsAccept: "Ndaverenga uye ndinobvuma Mitemo neMirayiridzo", maintAck: "Ndinonzwisisa kuti kugadzirisa, kugadzirisa kwakajairika uye kuchengetedza mudhudhudhu ibasa rangu (mutyairi).", errMaint: "Ndapota sarudza kuti unonzwisisa kuti kugadzirisa nekuchengetedza ibasa rako.", drivingAck: "Ndinobvuma kuti kutyaira zvakaipa kana kuwana faindi dzinopfuura 3 dzekumhanyisa kuchaita kuti chibvumirano changu chikanzurwe chega uye mudhudhudhu udzorerwe.", errDriving: "Ndapota sarudza kuti unobvuma mutemo wekukanzura nekutyaira zvakaipa / faindi dzekumhanyisa.", chooseContract: "Sarudza chibvumirano chako", rtoTitle: "Rent to Own (kutenga zvishoma nezvishoma)", rentalTitle: "Kurenda chete", noRtoStock: "Parizvino hapana midhudhudhu mitsva yeRent to Own — dzoka munguva pfupi kana kumbira kurenda.", noRentalStock: "Parizvino hapana midhudhudhu yekurenda — dzoka munguva pfupi.", errContract: "Ndapota sarudza Rent to Own kana Kurenda.", lowStock: "⚠️ Ndapota ziva: pane midhudhudhu {n} chete pane sarudzo iyi — panogona kunge paine zvimwe zvikumbiro pamberi pako, saka pedzisa chikumbiro chako nekukurumidza.",
+    tcsAccept: "Ndaverenga uye ndinobvuma Mitemo neMirayiridzo", maintAck: "Ndinonzwisisa kuti kugadzirisa, kugadzirisa kwakajairika uye kuchengetedza mudhudhudhu ibasa rangu (mutyairi).", errMaint: "Ndapota sarudza kuti unonzwisisa kuti kugadzirisa nekuchengetedza ibasa rako.", drivingAck: "Ndinobvuma kuti kutyaira zvakaipa kana kuwana faindi dzinopfuura 3 dzekumhanyisa kuchaita kuti chibvumirano changu chikanzurwe chega uye mudhudhudhu udzorerwe.", errDriving: "Ndapota sarudza kuti unobvuma mutemo wekukanzura nekutyaira zvakaipa / faindi dzekumhanyisa.", chooseContract: "Sarudza chibvumirano chako", rtoTitle: "Rent to Own (kutenga zvishoma nezvishoma)", rentalTitle: "Kurenda chete", noRtoStock: "Parizvino hapana midhudhudhu mitsva yeRent to Own — dzoka munguva pfupi kana kumbira kurenda.", noRentalStock: "Parizvino hapana midhudhudhu yekurenda — dzoka munguva pfupi.", errContract: "Ndapota sarudza Rent to Own kana Kurenda.", chooseBike: "Sarudza mudhudhudhu wako", availN: "{n} iripo", errBike: "Ndapota tanga wasarudza mudhudhudhu.", lowStock: "⚠️ Ndapota ziva: pane midhudhudhu {n} chete pane sarudzo iyi — panogona kunge paine zvimwe zvikumbiro pamberi pako, saka pedzisa chikumbiro chako nekukurumidza.",
     submit: "Tumira Chikumbiro Changu", send: "Tumira kuBike 4 U", submitting: "Chiri kutumirwa…",
     uploadingBtn: "Magwaro ari kukwidzwa…", retryBtn: "Edza zvakakundikana zvakare",
     uploading: "Riri kukwidzwa…", uploaded: "✓ Rakwidzwa", tooBig: "Faira ihombe zvakanyanya (max 8MB)",
@@ -513,7 +514,8 @@ const LANGS=[["en","🇬🇧","English"],["fr","🇨🇩","Français"],["sw","�
 let T = I18N.en;
 let SUP = null;        // {token, existing:[...]} when opened via personal link
 let CT = null;         // chosen contract type
-let STOCK = {rto:0, rental:0};
+let MODEL = null;      // chosen bike model (StockModel)
+let MODELS = [];
 let CAMPAIGN = "";
 
 const DOCS = [
@@ -547,6 +549,13 @@ function applyLang(lang){
   if(!go.disabled) go.textContent = SUP ? T.send : T.submit;
   document.getElementById("donetitle").textContent = SUP ? T.supSuccessTitle : T.successTitle;
   document.getElementById("donemsg").textContent = SUP ? T.supSuccessBody : T.successBody;
+  if (typeof MODELS !== "undefined" && MODELS.length && document.getElementById("modelCards").children.length) {
+    const wrap = document.getElementById("modelCards");
+    for (let i=0;i<wrap.children.length;i++){
+      const priceLine = wrap.children[i].querySelector(".ctp");
+      if (priceLine) priceLine.textContent = (T.availN||"{n} available").replace("{n}", MODELS[i].total);
+    }
+  }
   const lw=document.getElementById("langs");
   lw.innerHTML="";
   for(const [code,flag] of LANGS){
@@ -585,21 +594,55 @@ async function init(){
     document.getElementById("closed").style.display="block";return;
   }
   CAMPAIGN = "standing";
-  STOCK = state.stock || {rto:0, rental:0};
-  document.getElementById("bikeName").textContent = state.standing.bike;
+  MODELS = (state.stock && state.stock.models) || [];
   document.getElementById("rtoPrice").textContent = state.standing.rto_price;
   document.getElementById("rtoTerm").textContent = state.standing.rto_term;
   document.getElementById("rentalPrice").textContent = state.standing.rental_price;
   document.getElementById("rentalTerm").textContent = state.standing.rental_term;
-  for (const [id, avail] of [["ctRto", STOCK.rto > 0], ["ctRental", STOCK.rental > 0]]) {
+
+  function kmSummary(kms){
+    const fresh = kms.filter(k=>k<1000).length;
+    const used = kms.filter(k=>k>=1000).map(k=>k.toLocaleString("en-ZA")+" km");
+    const parts = [];
+    if (fresh>0) parts.push(fresh+" × 0 km (new)");
+    parts.push(...used.slice(0,4));
+    if (used.length>4) parts.push("…");
+    return parts.join(" · ");
+  }
+  function applyModelToContracts(){
+    for (const [id, count, naId] of [["ctRto", MODEL?MODEL.rto:0, "rtoNa"], ["ctRental", MODEL?MODEL.rental:0, "rentalNa"]]) {
+      const el = document.getElementById(id);
+      el.classList.remove("on");
+      if (!MODEL || count === 0) { el.classList.add("na"); document.getElementById(naId).style.display = MODEL ? "block" : "none"; }
+      else { el.classList.remove("na"); document.getElementById(naId).style.display = "none"; }
+    }
+    CT = null;
+    document.getElementById("stockNote").style.display = "none";
+  }
+  function renderModels(){
+    const wrap = document.getElementById("modelCards");
+    wrap.innerHTML = "";
+    for (const m of MODELS) {
+      const div = document.createElement("div");
+      div.className = "ctopt" + (MODEL && MODEL.name === m.name ? " on" : "");
+      div.innerHTML = "<b>"+m.name+"</b><div class=\"ctp\">"+(T.availN||"{n} available").replace("{n}", m.total)+"</div>"+
+        "<div class=\"ctt\">"+kmSummary(m.kms)+"</div>";
+      div.addEventListener("click", () => { MODEL = m; renderModels(); applyModelToContracts(); });
+      wrap.appendChild(div);
+    }
+  }
+  renderModels();
+  applyModelToContracts();
+
+  for (const id of ["ctRto", "ctRental"]) {
     const el = document.getElementById(id);
-    if (!avail) { el.classList.add("na"); document.getElementById(id === "ctRto" ? "rtoNa" : "rentalNa").style.display = "block"; }
-    else el.addEventListener("click", () => {
+    el.addEventListener("click", () => {
+      if (el.classList.contains("na") || !MODEL) return;
       CT = el.dataset.ct;
       document.getElementById("ctRto").classList.remove("on");
       document.getElementById("ctRental").classList.remove("on");
       el.classList.add("on");
-      const n = CT === "rent_to_own" ? STOCK.rto : STOCK.rental;
+      const n = CT === "rent_to_own" ? MODEL.rto : MODEL.rental;
       const note = document.getElementById("stockNote");
       if (n <= 5) { note.textContent = (T.lowStock || "").replace("{n}", n); note.style.display = "block"; }
       else note.style.display = "none";
@@ -724,6 +767,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     const refFull=v("refCC")+refNat;
     if(!v("referredBy")||refNat.length<7||refNat.length>10) return err(T.errReferral);
+    if(!MODEL) return err(T.errBike);
     if(!CT) return err(T.errContract);
     if(!document.getElementById("tc").checked) return err(T.errTcs);
     if(!document.getElementById("mnt").checked) return err(T.errMaint);
@@ -738,7 +782,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refFull,
-      contractType:CT,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
+      contractType:CT,model:MODEL.name,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
       const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
