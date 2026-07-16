@@ -247,7 +247,7 @@ const I18N = {
     noteLabel: "Message for the Bike 4 U team (optional)", notePh: "Anything you'd like to add...",
     tcsTitle: "Terms & Conditions", tcsRead: "Please read the full contract terms before applying:",
     tcsOpen: "📄 Open the Terms & Conditions (PDF)",
-    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.", chooseContract: "Choose your contract", rtoTitle: "Rent to Own", rentalTitle: "Rental Only", noRtoStock: "Currently no new bikes available for Rent to Own — please check back soon or apply for Rental.", noRentalStock: "Currently no rental bikes available — please check back soon.", errContract: "Please choose Rent to Own or Rental.", chooseBike: "Choose your bike", availN: "{n} available", errBike: "Please choose a bike first.", rentalCondTitle: "Rental Conditions", rentalFinesAck: "I understand and accept that I remain fully liable for ALL traffic fines received while the bike is in my possession.", rentalAccidentAck: "I understand that accidents are handled through insurance and that I am liable for the insurance excess. Where an accident is not my fault, any shortfall will be handled by agreement between both parties.", errRentalAcks: "Please accept both rental conditions.", lowStock: "⚠️ Please note: only {n} bike(s) currently available for this option — there may be other applications ahead of yours, so complete your application as soon as possible.",
+    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.", chooseContract: "Choose your contract", rtoTitle: "Rent to Own", rentalTitle: "Rental Only", noRtoStock: "Currently no new bikes available for Rent to Own — please check back soon or apply for Rental.", noRentalStock: "Currently no rental bikes available — please check back soon.", errContract: "Please choose Rent to Own or Rental.", chooseBike: "Choose your bike (optional — Max assigns the final bike)", availN: "{n} available", errBike: "Please choose a bike first.", rentalCondTitle: "Rental Conditions", rentalFinesAck: "I understand and accept that I remain fully liable for ALL traffic fines received while the bike is in my possession.", rentalAccidentAck: "I understand that accidents are handled through insurance and that I am liable for the insurance excess. Where an accident is not my fault, any shortfall will be handled by agreement between both parties.", errRentalAcks: "Please accept both rental conditions.", lowStock: "⚠️ Please note: only {n} bike(s) currently available for this option — there may be other applications ahead of yours, so complete your application as soon as possible.",
     submit: "Submit My Application", send: "Send to Bike 4 U", submitting: "Submitting…",
     uploadingBtn: "Uploading documents…", retryBtn: "Retry failed uploads",
     uploading: "Uploading…", uploaded: "✓ Uploaded", tooBig: "File too big (max 8MB)",
@@ -616,11 +616,15 @@ async function init(){
     if (used.length>4) parts.push("…");
     return parts.join(" · ");
   }
+  function aggRto(){ return MODELS.reduce((t,m)=>t+m.rto,0); }
+  function aggRental(){ return MODELS.reduce((t,m)=>t+m.rental,0); }
   function applyModelToContracts(){
-    for (const [id, count, naId] of [["ctRto", MODEL?MODEL.rto:0, "rtoNa"], ["ctRental", MODEL?MODEL.rental:0, "rentalNa"]]) {
+    // no model chosen = fine (Max assigns the unit) — contracts then use
+    // total stock across all models
+    for (const [id, count, naId] of [["ctRto", MODEL?MODEL.rto:aggRto(), "rtoNa"], ["ctRental", MODEL?MODEL.rental:aggRental(), "rentalNa"]]) {
       const el = document.getElementById(id);
       el.classList.remove("on");
-      if (!MODEL || count === 0) { el.classList.add("na"); document.getElementById(naId).style.display = MODEL ? "block" : "none"; }
+      if (count === 0) { el.classList.add("na"); document.getElementById(naId).style.display = "block"; }
       else { el.classList.remove("na"); document.getElementById(naId).style.display = "none"; }
     }
     CT = null;
@@ -644,7 +648,7 @@ async function init(){
   for (const id of ["ctRto", "ctRental"]) {
     const el = document.getElementById(id);
     el.addEventListener("click", () => {
-      if (el.classList.contains("na") || !MODEL) return;
+      if (el.classList.contains("na")) return;
       CT = el.dataset.ct;
       document.getElementById("ctRto").classList.remove("on");
       document.getElementById("ctRental").classList.remove("on");
@@ -652,7 +656,7 @@ async function init(){
       // rental has its own conditions; the RTO contract T&Cs don't apply
       document.getElementById("tcsOnly").style.display = CT === "rental_only" ? "none" : "block";
       document.getElementById("rentalOnly").style.display = CT === "rental_only" ? "block" : "none";
-      const n = CT === "rent_to_own" ? MODEL.rto : MODEL.rental;
+      const n = CT === "rent_to_own" ? (MODEL?MODEL.rto:aggRto()) : (MODEL?MODEL.rental:aggRental());
       const note = document.getElementById("stockNote");
       if (n <= 5) { note.textContent = (T.lowStock || "").replace("{n}", n); note.style.display = "block"; }
       else note.style.display = "none";
@@ -777,7 +781,6 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     const refFull=v("refCC")+refNat;
     if(!v("referredBy")||refNat.length<7||refNat.length>10) return err(T.errReferral);
-    if(!MODEL) return err(T.errBike);
     if(!CT) return err(T.errContract);
     if(CT==="rent_to_own" && !document.getElementById("tc").checked) return err(T.errTcs);
     if(CT==="rental_only" && (!document.getElementById("rfines").checked || !document.getElementById("raccid").checked)) return err(T.errRentalAcks);
@@ -793,7 +796,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refFull,
-      contractType:CT,model:MODEL.name,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
+      contractType:CT,model:MODEL?MODEL.name:null,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
       const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
