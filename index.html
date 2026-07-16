@@ -35,6 +35,9 @@
   .tcbox{background:#10131c;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px}
   #loading{text-align:center;color:var(--mut);padding:60px 0}
   #closed{text-align:center;padding:80px 0;display:none}
+  #langGate{display:none;text-align:center;padding:26px 0}
+  .gatebtn{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:10px 0;font-size:17px;color:var(--txt);cursor:pointer;text-align:left}
+  .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
 <div class="top">
   <div class="brand">BIKE 4 U</div>
@@ -42,6 +45,11 @@
 </div>
 <div id="loading">…</div>
 <div id="closed"><h2>Applications are currently closed.</h2><p>Please check with Bike 4 U on WhatsApp.</p></div>
+<div id="langGate">
+  <h1 style="font-size:21px;letter-spacing:.5px">CHOOSE YOUR LANGUAGE</h1>
+  <p style="color:var(--mut);font-size:13px;margin:6px 0 18px">Choisissez votre langue · Chagua lugha yako · Hitamwo ururimi · Sankhani chilankhulo · Sarudza mutauro</p>
+  <div id="gateBtns"></div>
+</div>
 <div id="app" style="display:none">
 <h1 id="pagetitle"></h1>
 <p style="color:var(--mut);margin:4px 0 0;font-size:13px" data-t="official"></p>
@@ -72,7 +80,12 @@
     <option value="asylum" data-t="asylum"></option>
   </select>
   <label class="req" data-t="idNumber"></label><input name="idNumber">
-  <label class="req" data-t="dob"></label><input name="dob" type="date">
+  <label class="req" data-t="dob"></label>
+  <div style="display:flex;gap:8px">
+    <select name="dob_d" style="flex:1"><option value="" data-t="dobDay"></option></select>
+    <select name="dob_m" style="flex:1.5"><option value="" data-t="dobMonth"></option></select>
+    <select name="dob_y" style="flex:1.2"><option value="" data-t="dobYear"></option></select>
+  </div>
   <label class="req" data-t="address"></label><input name="address">
 </div>
 
@@ -161,7 +174,7 @@ const I18N = {
     yourDetails: "Your Details", firstName: "First name", lastName: "Last name",
     phone: "WhatsApp / phone number", email: "Email address",
     idType: "ID type", saId: "South African ID", passport: "Passport", asylum: "Asylum Document",
-    idNumber: "ID / Passport / Asylum number", dob: "Date of birth", address: "Home address",
+    idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
     deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?",
     earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
     referralTitle: "Referral (optional)",
@@ -210,7 +223,7 @@ const I18N = {
     yourDetails: "Vos informations", firstName: "Prénom", lastName: "Nom",
     phone: "Numéro WhatsApp / téléphone", email: "Adresse e-mail",
     idType: "Type de pièce", saId: "Carte d'identité sud-africaine", passport: "Passeport", asylum: "Document d'asile",
-    idNumber: "Numéro d'identité / passeport / asile", dob: "Date de naissance", address: "Adresse du domicile",
+    idNumber: "Numéro d'identité / passeport / asile", dob: "Date de naissance", dobDay: "Jour", dobMonth: "Mois", dobYear: "Année", address: "Adresse du domicile",
     deliveryExp: "Expérience de livraison", platformQ: "Pour quelle plateforme livrez-vous ?",
     earningsQ: "Revenus hebdomadaires estimés", durationQ: "Depuis combien de temps faites-vous des livraisons ?",
     referralTitle: "Parrainage (facultatif)",
@@ -259,7 +272,7 @@ const I18N = {
     yourDetails: "Taarifa Zako", firstName: "Jina la kwanza", lastName: "Jina la ukoo",
     phone: "Namba ya WhatsApp / simu", email: "Barua pepe",
     idType: "Aina ya kitambulisho", saId: "Kitambulisho cha Afrika Kusini", passport: "Pasipoti", asylum: "Hati ya Ukimbizi",
-    idNumber: "Namba ya kitambulisho / pasipoti / ukimbizi", dob: "Tarehe ya kuzaliwa", address: "Anwani ya nyumbani",
+    idNumber: "Namba ya kitambulisho / pasipoti / ukimbizi", dob: "Tarehe ya kuzaliwa", dobDay: "Siku", dobMonth: "Mwezi", dobYear: "Mwaka", address: "Anwani ya nyumbani",
     deliveryExp: "Uzoefu wa Usafirishaji", platformQ: "Unasafirisha kwa jukwaa gani?",
     earningsQ: "Makadirio ya mapato ya wiki", durationQ: "Umefanya kazi ya usafirishaji kwa muda gani?",
     referralTitle: "Rufaa (hiari)",
@@ -308,7 +321,7 @@ const I18N = {
     yourDetails: "Amakuru Yawe", firstName: "Izina rya mbere", lastName: "Izina ry'umuryango",
     phone: "Inomero ya WhatsApp / terefone", email: "Imeyili",
     idType: "Ubwoko bw'ikarata", saId: "Ikarata y'Afrika y'Epfo", passport: "Pasiporo", asylum: "Icangombwa c'ubuhungiro",
-    idNumber: "Inomero y'ikarata / pasiporo / ubuhungiro", dob: "Itariki y'amavuko", address: "Aho uba",
+    idNumber: "Inomero y'ikarata / pasiporo / ubuhungiro", dob: "Itariki y'amavuko", dobDay: "Umusi", dobMonth: "Ukwezi", dobYear: "Umwaka", address: "Aho uba",
     deliveryExp: "Uburambe mu Gutwara", platformQ: "Ukorera iyihe porogaramu?",
     earningsQ: "Amahera yinjira ku ndwi", durationQ: "Umaze igihe kingana iki mu gutwara ibintu?",
     referralTitle: "Uwakurungitse (si itegeko)",
@@ -357,7 +370,7 @@ const I18N = {
     yourDetails: "Zambiri Zanu", firstName: "Dzina loyamba", lastName: "Dzina lomaliza",
     phone: "Nambala ya WhatsApp / foni", email: "Imelo",
     idType: "Mtundu wa chizindikiritso", saId: "ID ya South Africa", passport: "Pasipoti", asylum: "Chikalata cha Othawa",
-    idNumber: "Nambala ya ID / pasipoti / othawa", dob: "Tsiku lobadwa", address: "Adilesi ya kwanu",
+    idNumber: "Nambala ya ID / pasipoti / othawa", dob: "Tsiku lobadwa", dobDay: "Tsiku", dobMonth: "Mwezi", dobYear: "Chaka", address: "Adilesi ya kwanu",
     deliveryExp: "Zochitika pa Kutumiza", platformQ: "Mumagwirira ntchito nsanja iti?",
     earningsQ: "Ndalama zomwe mumapeza pa sabata", durationQ: "Mwakhala mukutumiza kwa nthawi yayitali bwanji?",
     referralTitle: "Kutumizidwa (mukafuna)",
@@ -406,7 +419,7 @@ const I18N = {
     yourDetails: "Ruzivo Rwako", firstName: "Zita rekutanga", lastName: "Zita remhuri",
     phone: "Nhamba yeWhatsApp / runhare", email: "Email",
     idType: "Rudzi rwechitupa", saId: "Chitupa cheSouth Africa", passport: "Pasipoti", asylum: "Gwaro reAsylum",
-    idNumber: "Nhamba yechitupa / pasipoti / asylum", dob: "Zuva rekuzvarwa", address: "Kero yepamba",
+    idNumber: "Nhamba yechitupa / pasipoti / asylum", dob: "Zuva rekuzvarwa", dobDay: "Zuva", dobMonth: "Mwedzi", dobYear: "Gore", address: "Kero yepamba",
     deliveryExp: "Ruzivo rweKutakura", platformQ: "Unoshandira platform ipi?",
     earningsQ: "Mari inofungidzirwa pavhiki", durationQ: "Wave nenguva yakareba sei uchiita zvekutakura?",
     referralTitle: "Kusumwa (kana uchida)",
@@ -447,7 +460,7 @@ const I18N = {
   },
 };
 
-const LANGS=[["en","🇬🇧"],["fr","🇨🇩"],["sw","🇹🇿"],["rn","🇧🇮"],["ny","🇲🇼"],["sn","🇿🇼"]];
+const LANGS=[["en","🇬🇧","English"],["fr","🇨🇩","Français"],["sw","🇹🇿","Kiswahili"],["rn","🇧🇮","Kirundi"],["ny","🇲🇼","Chichewa"],["sn","🇿🇼","Shona"]];
 let T = I18N.en;
 let SUP = null;        // {token, existing:[...]} when opened via personal link
 let CAMPAIGN = "";
@@ -523,16 +536,44 @@ async function init(){
     document.getElementById("mainOnly").style.display="none";
     document.getElementById("mainOnly2").style.display="none";
   }
-  document.getElementById("app").style.display="block";
-  let startLang="en";
-  try{startLang=localStorage.getItem("b4u_lang")||"en";}catch(_){}
-  applyLang(startLang);
-  if(SUP){
-    // reason text after translations so needMoreDefault can localise
-    const p=document.getElementById("supReason");
-    p.textContent = state.sup.reason || T.needMoreDefault;
+  window.__supReason = state.sup ? state.sup.reason : null;
+  // Language gate first (Max: the link must open on CHOOSE YOUR LANGUAGE,
+  // flags + names, before anything else — flags stay on top afterwards).
+  const gate=document.getElementById("langGate");
+  const gb=document.getElementById("gateBtns");
+  gb.innerHTML="";
+  for(const [code,flag,name] of LANGS){
+    const b=document.createElement("button");
+    b.type="button";b.className="gatebtn";
+    b.innerHTML='<span style="font-size:26px">'+flag+'</span><b>'+name+'</b>';
+    b.onclick=()=>{
+      gate.style.display="none";
+      document.getElementById("app").style.display="block";
+      applyLang(code);
+      if(SUP){
+        const pr=document.getElementById("supReason");
+        pr.textContent = window.__supReason || T.needMoreDefault;
+      }
+      window.scrollTo({top:0});
+    };
+    gb.appendChild(b);
   }
+  gate.style.display="block";
 }
+
+// Budget-phone friendly DOB: three dropdowns instead of the native date
+// picker (going back decades in the native picker is painful).
+(function(){
+  const d=document.querySelector('select[name=dob_d]');
+  const m=document.querySelector('select[name=dob_m]');
+  const y=document.querySelector('select[name=dob_y]');
+  if(!d) return;
+  const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  for(let i=1;i<=31;i++){const o=document.createElement("option");o.value=String(i).padStart(2,"0");o.textContent=i;d.appendChild(o);}
+  for(let i=1;i<=12;i++){const o=document.createElement("option");o.value=String(i).padStart(2,"0");o.textContent=String(i).padStart(2,"0")+" \u00b7 "+MONTHS[i-1];m.appendChild(o);}
+  const yNow=new Date().getFullYear();
+  for(let i=yNow-18;i>=yNow-75;i--){const o=document.createElement("option");o.value=String(i);o.textContent=i;y.appendChild(o);}
+})();
 init();
 
 document.getElementById("nobank").addEventListener("change", e=>{
@@ -587,7 +628,8 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
   if(!SUP&&!window.__token){
     const v=n=>((F[n]&&F[n].value)||"").trim();
     idType=v("idType");
-    if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!v("dob")||!v("address"))
+    const dobStr = v("dob_y")&&v("dob_m")&&v("dob_d") ? v("dob_y")+"-"+v("dob_m")+"-"+v("dob_d") : "";
+    if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address"))
       return err(T.errRequired);
     if(!/^\S+@\S+\.\S+$/.test(v("email"))) return err(T.errEmail);
     const av=F.querySelector('input[name=availability]:checked');
@@ -600,7 +642,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     btn.disabled=true;btn.textContent=T.submitting;
     const payload={action:"submit",campaign:CAMPAIGN,website:v("website"),
       firstName:v("firstName"),lastName:v("lastName"),phone:v("phone"),email:v("email"),
-      idType:idType,idNumber:v("idNumber"),dob:v("dob"),address:v("address"),
+      idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:v("referredByPhone"),
       availability:av.value==="yes",noBankAccount:nobank,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
