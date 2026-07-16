@@ -132,8 +132,24 @@
 <div class="card">
   <h3 style="margin:0 0 4px" data-t="referralTitle"></h3>
   <p style="color:var(--mut);font-size:13px;margin:2px 0 0" data-t="referralHint"></p>
-  <label data-t="refName"></label><input name="referredBy">
-  <label data-t="refPhone"></label><input name="referredByPhone" type="tel">
+  <label class="req" data-t="refName"></label><input name="referredBy">
+  <label class="req" data-t="refPhone"></label>
+  <div style="display:flex;gap:8px">
+    <select name="refCC" style="flex:0 0 128px">
+      <option value="+27" selected>🇿🇦 +27</option>
+      <option value="+243">🇨🇩 +243</option>
+      <option value="+257">🇧🇮 +257</option>
+      <option value="+265">🇲🇼 +265</option>
+      <option value="+263">🇿🇼 +263</option>
+      <option value="+255">🇹🇿 +255</option>
+      <option value="+254">🇰🇪 +254</option>
+      <option value="+260">🇿🇲 +260</option>
+      <option value="+258">🇲🇿 +258</option>
+      <option value="+266">🇱🇸 +266</option>
+      <option value="+268">🇸🇿 +268</option>
+    </select>
+    <input name="referredByPhone" type="tel" placeholder="73 123 4567" style="flex:1">
+  </div>
 </div>
 
 <div class="card radio">
@@ -209,9 +225,9 @@ const I18N = {
     idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
     deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?", selectOne: "Select…",
     earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
-    referralTitle: "Referral (optional)",
-    referralHint: "Were you referred by an existing Bike 4 U driver? We verify this against our records.",
-    refName: "Referrer's full name", refPhone: "Referrer's phone number",
+    referralTitle: "Referral (REQUIRED)",
+    referralHint: "Every application needs a referral from an existing Bike 4 U driver. Enter their full name and phone number — we check this against our records and will contact them to confirm.",
+    refName: "Referrer's full name", errReferral: "Please enter your referrer's full name and a valid phone number — a referral from an existing Bike 4 U driver is required.", refPhone: "Referrer's phone number",
     availQ: "Will you be available on Friday 17 July at 14:00 to collect your bike?",
     availYes: "Yes — I will be there", availNo: "No — I can't make that time", altDayQ: "What day are you available?", altD1: "Saturday 18 July", altD2: "Monday 20 July", altD3: "Tuesday 21 July", altD4: "Wednesday 22 July", errAltDay: "Please choose the day you are available.",
     docsTitle: "Documents", docsHint: "Clear photos or PDF scans. Max 8MB each.", docsForeignNote: "PLEASE NOTE: IF YOU ARE A FOREIGNER, YOU ARE REQUIRED TO SUBMIT EITHER YOUR VALID ASYLUM DOCUMENT OR VALID WORK PERMIT.",
@@ -258,9 +274,9 @@ const I18N = {
     idNumber: "Numéro d'identité / passeport / asile", dob: "Date de naissance", dobDay: "Jour", dobMonth: "Mois", dobYear: "Année", address: "Adresse du domicile",
     deliveryExp: "Expérience de livraison", platformQ: "Pour quelle plateforme livrez-vous ?", selectOne: "Choisissez…",
     earningsQ: "Revenus hebdomadaires estimés", durationQ: "Depuis combien de temps faites-vous des livraisons ?",
-    referralTitle: "Parrainage (facultatif)",
-    referralHint: "Avez-vous été recommandé par un chauffeur Bike 4 U ? Nous vérifions dans nos dossiers.",
-    refName: "Nom complet du parrain", refPhone: "Numéro de téléphone du parrain",
+    referralTitle: "Parrainage (OBLIGATOIRE)",
+    referralHint: "Chaque candidature exige le parrainage d'un chauffeur Bike 4 U actuel. Indiquez son nom complet et son numéro — nous vérifions dans nos dossiers et le contacterons pour confirmer.",
+    refName: "Nom complet du parrain", errReferral: "Veuillez saisir le nom complet de votre parrain et un numéro valide — le parrainage d'un chauffeur Bike 4 U actuel est obligatoire.", refPhone: "Numéro de téléphone du parrain",
     availQ: "Serez-vous disponible le vendredi 17 juillet à 14h00 pour récupérer votre moto ?",
     availYes: "Oui — je serai là", availNo: "Non — je ne peux pas à cette heure", altDayQ: "Quel jour êtes-vous disponible ?", altD1: "samedi 18 juillet", altD2: "lundi 20 juillet", altD3: "mardi 21 juillet", altD4: "mercredi 22 juillet", errAltDay: "Veuillez choisir le jour où vous êtes disponible.",
     docsTitle: "Documents", docsHint: "Photos nettes ou scans PDF. Max 8 Mo chacun.", docsForeignNote: "VEUILLEZ NOTER : SI VOUS ÊTES ÉTRANGER, VOUS DEVEZ SOUMETTRE SOIT VOTRE DOCUMENT D'ASILE VALIDE, SOIT VOTRE PERMIS DE TRAVAIL VALIDE.",
@@ -307,9 +323,9 @@ const I18N = {
     idNumber: "Namba ya kitambulisho / pasipoti / ukimbizi", dob: "Tarehe ya kuzaliwa", dobDay: "Siku", dobMonth: "Mwezi", dobYear: "Mwaka", address: "Anwani ya nyumbani",
     deliveryExp: "Uzoefu wa Usafirishaji", platformQ: "Unasafirisha kwa jukwaa gani?", selectOne: "Chagua…",
     earningsQ: "Makadirio ya mapato ya wiki", durationQ: "Umefanya kazi ya usafirishaji kwa muda gani?",
-    referralTitle: "Rufaa (hiari)",
-    referralHint: "Je, ulipendekezwa na dereva wa Bike 4 U? Tunathibitisha kwenye kumbukumbu zetu.",
-    refName: "Jina kamili la aliyekupendekeza", refPhone: "Namba ya simu ya aliyekupendekeza",
+    referralTitle: "Rufaa (LAZIMA)",
+    referralHint: "Kila maombi yanahitaji rufaa kutoka kwa dereva wa sasa wa Bike 4 U. Andika jina lake kamili na namba ya simu — tunathibitisha kwenye kumbukumbu zetu na tutawasiliana naye kuthibitisha.",
+    refName: "Jina kamili la aliyekupendekeza", errReferral: "Tafadhali andika jina kamili la aliyekupendekeza na namba sahihi ya simu — rufaa kutoka kwa dereva wa Bike 4 U ni lazima.", refPhone: "Namba ya simu ya aliyekupendekeza",
     availQ: "Je, utapatikana Ijumaa tarehe 17 Julai saa 14:00 kuchukua pikipiki yako?",
     availYes: "Ndiyo — nitakuwepo", availNo: "Hapana — siwezi wakati huo", altDayQ: "Utapatikana siku gani?", altD1: "Jumamosi 18 Julai", altD2: "Jumatatu 20 Julai", altD3: "Jumanne 21 Julai", altD4: "Jumatano 22 Julai", errAltDay: "Tafadhali chagua siku utakayopatikana.",
     docsTitle: "Nyaraka", docsHint: "Picha wazi au skani za PDF. Kila moja isizidi 8MB.", docsForeignNote: "TAFADHALI KUMBUKA: IKIWA WEWE NI MGENI, UNATAKIWA KUWASILISHA HATI YAKO HALALI YA UKIMBIZI AU KIBALI HALALI CHA KAZI.",
@@ -356,9 +372,9 @@ const I18N = {
     idNumber: "Inomero y'ikarata / pasiporo / ubuhungiro", dob: "Itariki y'amavuko", dobDay: "Umusi", dobMonth: "Ukwezi", dobYear: "Umwaka", address: "Aho uba",
     deliveryExp: "Uburambe mu Gutwara", platformQ: "Ukorera iyihe porogaramu?", selectOne: "Hitamwo…",
     earningsQ: "Amahera yinjira ku ndwi", durationQ: "Umaze igihe kingana iki mu gutwara ibintu?",
-    referralTitle: "Uwakurungitse (si itegeko)",
-    referralHint: "Woba warungitswe n'umushoferi wa Bike 4 U? Turabisuzuma mu bitabu vyacu.",
-    refName: "Izina ryose ry'uwakurungitse", refPhone: "Inomero ya terefone y'uwakurungitse",
+    referralTitle: "Uwakurungitse (BITEGETSWE)",
+    referralHint: "Ubusabe bwose butegerezwa kurungikwa n'umushoferi wa Bike 4 U ariho ubu. Andika izina ryiwe ryose n'inomero ya terefone — turabisuzuma kandi tuzomuvugisha kugira yemeze.",
+    refName: "Izina ryose ry'uwakurungitse", errReferral: "Andika izina ryose ry'uwakurungitse n'inomero ya terefone yo kuri — gukurungikwa n'umushoferi wa Bike 4 U birategetswe.", refPhone: "Inomero ya terefone y'uwakurungitse",
     availQ: "Uzoba uhari ku wa gatanu itariki 17 Mukakaro isaha ya 14:00 gutora ipikipiki yawe?",
     availYes: "Ego — nzoba ndi ho", availNo: "Oya — sinshobora ico gihe", altDayQ: "Uzoboneka uwuhe musi?", altD1: "Ku wa gatandatu 18 Mukakaro", altD2: "Ku wa mbere 20 Mukakaro", altD3: "Ku wa kabiri 21 Mukakaro", altD4: "Ku wa gatatu 22 Mukakaro", errAltDay: "Hitamwo umusi uzoboneka.",
     docsTitle: "Ivyangombwa", docsHint: "Amafoto atomoye canke PDF. Kimwe ntikirenge 8MB.", docsForeignNote: "MENYA NEZA: NIBA URI UMUNYAMAHANGA, UTEGEREZWA GUTANGA ICANGOMBWA CAWE C'UBUHUNGIRO KIRIHO CANKE URUHUSHYA RW'AKAZI RURIHO.",
@@ -405,9 +421,9 @@ const I18N = {
     idNumber: "Nambala ya ID / pasipoti / othawa", dob: "Tsiku lobadwa", dobDay: "Tsiku", dobMonth: "Mwezi", dobYear: "Chaka", address: "Adilesi ya kwanu",
     deliveryExp: "Zochitika pa Kutumiza", platformQ: "Mumagwirira ntchito nsanja iti?", selectOne: "Sankhani…",
     earningsQ: "Ndalama zomwe mumapeza pa sabata", durationQ: "Mwakhala mukutumiza kwa nthawi yayitali bwanji?",
-    referralTitle: "Kutumizidwa (mukafuna)",
-    referralHint: "Kodi munatumizidwa ndi dalaivala wa Bike 4 U? Timatsimikizira m'mabuku athu.",
-    refName: "Dzina lonse la amene anakutumizani", refPhone: "Nambala ya foni ya amene anakutumizani",
+    referralTitle: "Kutumizidwa (KOFUNIKIRA)",
+    referralHint: "Pempho lililonse limafuna kutumizidwa ndi dalaivala wa Bike 4 U wapano. Lembani dzina lake lonse ndi nambala ya foni — timatsimikizira m'mabuku athu ndipo tidzamuyimbira kutsimikizira.",
+    refName: "Dzina lonse la amene anakutumizani", errReferral: "Chonde lembani dzina lonse la amene anakutumizani ndi nambala yolondola — kutumizidwa ndi dalaivala wa Bike 4 U ndikofunikira.", refPhone: "Nambala ya foni ya amene anakutumizani",
     availQ: "Kodi mudzapezeka Lachisanu pa 17 July nthawi ya 14:00 kudzatenga njinga yanu?",
     availYes: "Inde — ndidzakhalapo", availNo: "Ayi — sindingathe nthawi imeneyo", altDayQ: "Mudzapezeka tsiku liti?", altD1: "Loweruka 18 July", altD2: "Lolemba 20 July", altD3: "Lachiwiri 21 July", altD4: "Lachitatu 22 July", errAltDay: "Chonde sankhani tsiku lomwe mudzapezeka.",
     docsTitle: "Zikalata", docsHint: "Zithunzi zomveka kapena PDF. Iliyonse isapitirire 8MB.", docsForeignNote: "CHONDE DZIWANI: NGATI NDINU MLENDO, MUYENERA KUPEREKA CHIKALATA CHANU CHA OTHAWA CHOVOMEREZEKA KAPENA CHILOLEZO CHA NTCHITO CHOVOMEREZEKA.",
@@ -454,9 +470,9 @@ const I18N = {
     idNumber: "Nhamba yechitupa / pasipoti / asylum", dob: "Zuva rekuzvarwa", dobDay: "Zuva", dobMonth: "Mwedzi", dobYear: "Gore", address: "Kero yepamba",
     deliveryExp: "Ruzivo rweKutakura", platformQ: "Unoshandira platform ipi?", selectOne: "Sarudza…",
     earningsQ: "Mari inofungidzirwa pavhiki", durationQ: "Wave nenguva yakareba sei uchiita zvekutakura?",
-    referralTitle: "Kusumwa (kana uchida)",
-    referralHint: "Wakasumwa here nemutyairi weBike 4 U aripo? Tinosimbisa mumabhuku edu.",
-    refName: "Zita rizere reakusuma", refPhone: "Nhamba yerunhare yeakusuma",
+    referralTitle: "Kusumwa (KUNODIWA)",
+    referralHint: "Chikumbiro chese chinoda kusumwa nemutyairi weBike 4 U aripo. Nyora zita rake rizere nenhamba yerunhare — tinosimbisa mumabhuku edu uye tichamubata kuti asimbise.",
+    refName: "Zita rizere reakusuma", errReferral: "Ndapota nyora zita rizere reakusuma nenhamba chaiyo — kusumwa nemutyairi weBike 4 U kunodiwa.", refPhone: "Nhamba yerunhare yeakusuma",
     availQ: "Uchawanikwa here neChishanu 17 July na14:00 kuzotora mudhudhudhu wako?",
     availYes: "Hongu — ndichavapo", availNo: "Kwete — handikwanisi nguva iyoyo", altDayQ: "Uchawanikwa zuva ripi?", altD1: "Mugovera 18 July", altD2: "Muvhuro 20 July", altD3: "Chipiri 21 July", altD4: "Chitatu 22 July", errAltDay: "Ndapota sarudza zuva rauchawanikwa.",
     docsTitle: "Magwaro", docsHint: "Mifananidzo yakajeka kana PDF. Rimwe nerimwe risapfuura 8MB.", docsForeignNote: "NDAPOTA ZIVA: KANA URI MUTORWA, UNOFANIRA KUPA GWARO RAKO REASYLUM RINOSHANDA KANA WORK PERMIT INOSHANDA.",
@@ -675,6 +691,9 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     let natNum=v("phone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     const fullPhone=v("phoneCC")+natNum;
     if(natNum.length<7||natNum.length>10) return err(T.errPhone);
+    let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
+    const refFull=v("refCC")+refNat;
+    if(!v("referredBy")||refNat.length<7||refNat.length>10) return err(T.errReferral);
     const av=F.querySelector('input[name=availability]:checked');
     if(!av) return err(T.errAvail);
     if(av.value==="no"&&!v("altDay")) return err(T.errAltDay);
@@ -689,7 +708,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       firstName:v("firstName"),lastName:v("lastName"),phone:fullPhone,email:v("email"),
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
-      referredBy:v("referredBy"),referredByPhone:v("referredByPhone"),
+      referredBy:v("referredBy"),referredByPhone:refFull,
       availability:av.value==="yes",alternativeDay:av.value==="no"?v("altDay"):null,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
