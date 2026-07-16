@@ -194,6 +194,7 @@
   <a id="tcslink" href="#" target="_blank" rel="noopener"><b data-t="tcsOpen"></b></a></div>
   <div class="check"><input type="checkbox" id="tc"><label for="tc" style="margin:0;color:var(--txt)" class="req" data-t="tcsAccept"></label></div>
   <div class="check"><input type="checkbox" id="mnt"><label for="mnt" style="margin:0;color:var(--txt)" class="req" data-t="maintAck"></label></div>
+  <div class="check"><input type="checkbox" id="drv"><label for="drv" style="margin:0;color:var(--txt)" class="req" data-t="drivingAck"></label></div>
 </div>
 </div>
 
@@ -238,7 +239,7 @@ const I18N = {
     noteLabel: "Message for the Bike 4 U team (optional)", notePh: "Anything you'd like to add...",
     tcsTitle: "Terms & Conditions", tcsRead: "Please read the full contract terms before applying:",
     tcsOpen: "📄 Open the Terms & Conditions (PDF)",
-    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.",
+    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.",
     submit: "Submit My Application", send: "Send to Bike 4 U", submitting: "Submitting…",
     uploadingBtn: "Uploading documents…", retryBtn: "Retry failed uploads",
     uploading: "Uploading…", uploaded: "✓ Uploaded", tooBig: "File too big (max 8MB)",
@@ -287,7 +288,7 @@ const I18N = {
     noteLabel: "Message pour l'équipe Bike 4 U (facultatif)", notePh: "Ce que vous souhaitez ajouter...",
     tcsTitle: "Termes et conditions", tcsRead: "Veuillez lire les conditions complètes du contrat avant de postuler :",
     tcsOpen: "📄 Ouvrir les termes et conditions (PDF)",
-    tcsAccept: "J'ai lu et j'accepte les termes et conditions", maintAck: "Je comprends que l'entretien, les r\u00e9parations g\u00e9n\u00e9rales et la maintenance sont \u00e0 ma charge (le conducteur).", errMaint: "Veuillez cocher que vous comprenez que les r\u00e9parations et l'entretien sont \u00e0 votre charge.",
+    tcsAccept: "J'ai lu et j'accepte les termes et conditions", maintAck: "Je comprends que l'entretien, les r\u00e9parations g\u00e9n\u00e9rales et la maintenance sont \u00e0 ma charge (le conducteur).", errMaint: "Veuillez cocher que vous comprenez que les r\u00e9parations et l'entretien sont \u00e0 votre charge.", drivingAck: "Je reconnais que la mauvaise conduite ou plus de 3 amendes pour excès de vitesse entraînera l’annulation automatique de mon contrat et la restitution de la moto.", errDriving: "Veuillez cocher que vous acceptez la règle d’annulation pour mauvaise conduite / excès de vitesse.",
     submit: "Envoyer ma candidature", send: "Envoyer à Bike 4 U", submitting: "Envoi en cours…",
     uploadingBtn: "Envoi des documents…", retryBtn: "Réessayer les envois échoués",
     uploading: "Envoi…", uploaded: "✓ Envoyé", tooBig: "Fichier trop volumineux (max 8 Mo)",
@@ -336,7 +337,7 @@ const I18N = {
     noteLabel: "Ujumbe kwa timu ya Bike 4 U (hiari)", notePh: "Chochote unachotaka kuongeza...",
     tcsTitle: "Vigezo na Masharti", tcsRead: "Tafadhali soma masharti kamili ya mkataba kabla ya kuomba:",
     tcsOpen: "📄 Fungua Vigezo na Masharti (PDF)",
-    tcsAccept: "Nimesoma na ninakubali Vigezo na Masharti", maintAck: "Ninaelewa kuwa huduma, matengenezo ya kawaida na utunzaji ni jukumu langu (dereva).", errMaint: "Tafadhali weka alama kuwa unaelewa matengenezo na utunzaji ni jukumu lako.",
+    tcsAccept: "Nimesoma na ninakubali Vigezo na Masharti", maintAck: "Ninaelewa kuwa huduma, matengenezo ya kawaida na utunzaji ni jukumu langu (dereva).", errMaint: "Tafadhali weka alama kuwa unaelewa matengenezo na utunzaji ni jukumu lako.", drivingAck: "Ninakiri kuwa uendeshaji mbaya au kupata faini zaidi ya 3 za mwendo kasi kutasababisha kufutwa kiotomatiki kwa mkataba wangu na pikipiki kurudishwa.", errDriving: "Tafadhali weka alama kuwa unakubali sharti la kufutwa kwa uendeshaji mbaya / faini za mwendo kasi.",
     submit: "Tuma Maombi Yangu", send: "Tuma kwa Bike 4 U", submitting: "Inatuma…",
     uploadingBtn: "Inapakia nyaraka…", retryBtn: "Jaribu tena zilizoshindikana",
     uploading: "Inapakia…", uploaded: "✓ Imepakiwa", tooBig: "Faili kubwa mno (max 8MB)",
@@ -385,7 +386,7 @@ const I18N = {
     noteLabel: "Ubutumwa ku murwi wa Bike 4 U (si itegeko)", notePh: "Ico wipfuza kwongerako...",
     tcsTitle: "Amategeko n'Ibisabwa", tcsRead: "Turakwinginze usome amategeko yose y'amasezerano imbere yo gusaba:",
     tcsOpen: "📄 Fungura Amategeko n'Ibisabwa (PDF)",
-    tcsAccept: "Ndasomye kandi ndemera Amategeko n'Ibisabwa", maintAck: "Ndatahura ko gusanura, ugukanika no kubungabunga ipikipiki ari ibanga ryanje (umushoferi).", errMaint: "Emeza ko utahura ko ugukanika no kubungabunga ari ibanga ryawe.",
+    tcsAccept: "Ndasomye kandi ndemera Amategeko n'Ibisabwa", maintAck: "Ndatahura ko gusanura, ugukanika no kubungabunga ipikipiki ari ibanga ryanje (umushoferi).", errMaint: "Emeza ko utahura ko ugukanika no kubungabunga ari ibanga ryawe.", drivingAck: "Ndemera ko ugutwara nabi canke guhabwa amande arenga 3 y’umuvuduko bizotuma amasezerano yanje ahagarikwa ubwayo n’ipikipiki igasubizwa.", errDriving: "Emeza ko wemera itegeko ryo guhagarika kubera ugutwara nabi / amande y’umuvuduko.",
     submit: "Rungika Ubusabe Bwanje", send: "Rungika kuri Bike 4 U", submitting: "Birarungikwa…",
     uploadingBtn: "Ivyangombwa birapakirwa…", retryBtn: "Subira ugerageze ivyanse",
     uploading: "Birapakirwa…", uploaded: "✓ Vyapakiwe", tooBig: "Idosiye ni nini cane (max 8MB)",
@@ -434,7 +435,7 @@ const I18N = {
     noteLabel: "Uthenga kwa gulu la Bike 4 U (mukafuna)", notePh: "Chilichonse chomwe mukufuna kuonjezera...",
     tcsTitle: "Malamulo ndi Zikhalidwe", tcsRead: "Chonde werengani malamulo onse a mgwirizano musanapemphe:",
     tcsOpen: "📄 Tsegulani Malamulo ndi Zikhalidwe (PDF)",
-    tcsAccept: "Ndawerenga ndipo ndikuvomereza Malamulo ndi Zikhalidwe", maintAck: "Ndikumvetsa kuti kukonza, kukonzanso kwa wamba ndi kusamalira njinga ndi udindo wanga (woyendetsa).", errMaint: "Chonde sankhani kuti mukumvetsa kuti kukonza ndi kusamalira ndi udindo wanu.",
+    tcsAccept: "Ndawerenga ndipo ndikuvomereza Malamulo ndi Zikhalidwe", maintAck: "Ndikumvetsa kuti kukonza, kukonzanso kwa wamba ndi kusamalira njinga ndi udindo wanga (woyendetsa).", errMaint: "Chonde sankhani kuti mukumvetsa kuti kukonza ndi kusamalira ndi udindo wanu.", drivingAck: "Ndikuvomereza kuti kuyendetsa moyipa kapena kulandira zilango zoposa 3 za liwiro kudzachititsa kuti mgwirizano wanga uthe zokha ndipo njinga ibwezedwe.", errDriving: "Chonde sankhani kuti mukuvomereza lamulo lothetsa chifukwa cha kuyendetsa moyipa / zilango za liwiro.",
     submit: "Tumizani Pempho Langa", send: "Tumizani kwa Bike 4 U", submitting: "Likutumizidwa…",
     uploadingBtn: "Zikalata zikukwezedwa…", retryBtn: "Yesaninso zomwe zalephera",
     uploading: "Ikukwezedwa…", uploaded: "✓ Yakwezedwa", tooBig: "Fayilo yayikulu kwambiri (max 8MB)",
@@ -483,7 +484,7 @@ const I18N = {
     noteLabel: "Shoko kuchikwata cheBike 4 U (kana uchida)", notePh: "Chero chaunoda kuwedzera...",
     tcsTitle: "Mitemo neMirayiridzo", tcsRead: "Ndapota verenga mitemo yese yechibvumirano usati wakumbira:",
     tcsOpen: "📄 Vhura Mitemo neMirayiridzo (PDF)",
-    tcsAccept: "Ndaverenga uye ndinobvuma Mitemo neMirayiridzo", maintAck: "Ndinonzwisisa kuti kugadzirisa, kugadzirisa kwakajairika uye kuchengetedza mudhudhudhu ibasa rangu (mutyairi).", errMaint: "Ndapota sarudza kuti unonzwisisa kuti kugadzirisa nekuchengetedza ibasa rako.",
+    tcsAccept: "Ndaverenga uye ndinobvuma Mitemo neMirayiridzo", maintAck: "Ndinonzwisisa kuti kugadzirisa, kugadzirisa kwakajairika uye kuchengetedza mudhudhudhu ibasa rangu (mutyairi).", errMaint: "Ndapota sarudza kuti unonzwisisa kuti kugadzirisa nekuchengetedza ibasa rako.", drivingAck: "Ndinobvuma kuti kutyaira zvakaipa kana kuwana faindi dzinopfuura 3 dzekumhanyisa kuchaita kuti chibvumirano changu chikanzurwe chega uye mudhudhudhu udzorerwe.", errDriving: "Ndapota sarudza kuti unobvuma mutemo wekukanzura nekutyaira zvakaipa / faindi dzekumhanyisa.",
     submit: "Tumira Chikumbiro Changu", send: "Tumira kuBike 4 U", submitting: "Chiri kutumirwa…",
     uploadingBtn: "Magwaro ari kukwidzwa…", retryBtn: "Edza zvakakundikana zvakare",
     uploading: "Riri kukwidzwa…", uploaded: "✓ Rakwidzwa", tooBig: "Faira ihombe zvakanyanya (max 8MB)",
@@ -699,6 +700,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(av.value==="no"&&!v("altDay")) return err(T.errAltDay);
     if(!document.getElementById("tc").checked) return err(T.errTcs);
     if(!document.getElementById("mnt").checked) return err(T.errMaint);
+    if(!document.getElementById("drv").checked) return err(T.errDriving);
     if(!files.id_document) return err(T.errIdDoc);
     if(!files.drivers_license) return err(T.errLicense);
     if(!files.bank_statement&&!nobank) return err(T.errBank);
@@ -709,7 +711,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refFull,
-      availability:av.value==="yes",alternativeDay:av.value==="no"?v("altDay"):null,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
+      availability:av.value==="yes",alternativeDay:av.value==="no"?v("altDay"):null,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
       const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
