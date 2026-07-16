@@ -1,0 +1,768 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bike 4 U — Application</title>
+<style>
+  :root{--teal:#2EC5B6;--pink:#E91E63;--bg:#141721;--card:#1A1D2B;--line:#2a2f42;--txt:#eef1f7;--mut:#9aa3b5}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px;max-width:560px;margin-inline:auto}
+  h1{font-size:22px;margin:8px 0 2px}
+  .brand{color:var(--teal);font-weight:800;letter-spacing:.3px;font-size:15px}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .langs button{background:none;border:1px solid var(--line);border-radius:8px;font-size:17px;padding:3px 7px;margin-right:6px;cursor:pointer}
+  .langs button.on{border-color:var(--teal);background:rgba(46,197,182,.12)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+  .batch{border-color:rgba(233,30,99,.55);background:rgba(233,30,99,.07);font-weight:600;font-size:14px}
+  .deal b{color:var(--teal)}
+  .deal .row{display:flex;gap:8px;margin:6px 0;align-items:baseline}
+  .deal .row span:first-child{color:var(--mut);min-width:96px;font-size:13px;flex:none}
+  label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+  input,select,textarea{width:100%;background:#10131c;border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:11px 12px;font-size:15px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
+  .req::after{content:" *";color:var(--pink)}
+  .check{display:flex;gap:10px;align-items:flex-start;margin:10px 0}
+  .check input{width:20px;height:20px;margin-top:2px;flex:none}
+  .radio label{color:var(--txt);font-size:15px;margin:0}
+  .btn{width:100%;border:0;border-radius:11px;padding:15px;font-size:16px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--pink),var(--teal));margin-top:16px;cursor:pointer}
+  .btn[disabled]{opacity:.5}
+  .doc{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .doc .st{font-size:12px;color:var(--mut);margin-top:6px}
+  .doc .st.ok{color:#34d399}.doc .st.err{color:#f87171}
+  .have{color:#34d399;font-size:12px;font-weight:700}
+  a{color:var(--teal)}
+  .err{color:#f87171;font-size:13px;margin-top:8px;display:none}
+  .success{text-align:center;padding:34px 10px;display:none}
+  .success h2{color:var(--teal)}
+  .tcbox{background:#10131c;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px}
+  #loading{text-align:center;color:var(--mut);padding:60px 0}
+  #closed{text-align:center;padding:80px 0;display:none}
+  .ctopt{border:2px solid var(--line);border-radius:12px;padding:13px 14px;margin:9px 0;cursor:pointer}
+  .ctopt.on{border-color:var(--teal);background:rgba(46,197,182,.08)}
+  .ctopt.na{opacity:.55;cursor:not-allowed}
+  .ctopt .ctp{color:var(--teal);font-weight:800;margin-top:2px}
+  .ctopt .ctt{color:var(--mut);font-size:12.5px;margin-top:2px}
+  .ctopt .ctna{color:#f59e0b;font-size:12px;font-weight:700;margin-top:6px}
+  #langGate{display:none;text-align:center;padding:26px 0}
+  .gatebtn{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:10px 0;font-size:17px;color:var(--txt);cursor:pointer;text-align:left}
+  .gatebtn:active{border-color:var(--teal)}
+</style></head><body>
+<div style="display:flex;align-items:center;gap:10px">
+  <img src="../logo.png" alt="Bike 4 U" style="height:40px;width:40px;border-radius:10px">
+  <div class="brand" style="font-size:20px;background:linear-gradient(135deg,var(--pink),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent">BIKE 4 U</div>
+</div>
+<div class="langs" id="langs" style="margin-top:10px"></div>
+<div id="loading">…</div>
+<div id="closed"><h2>Applications are currently closed.</h2><p>Please check with Bike 4 U on WhatsApp.</p></div>
+<div id="langGate">
+  <h1 style="font-size:21px;letter-spacing:.5px">CHOOSE YOUR LANGUAGE</h1>
+  <p style="color:var(--mut);font-size:13px;margin:6px 0 18px">Choisissez votre langue · Chagua lugha yako · Hitamwo ururimi · Sankhani chilankhulo · Sarudza mutauro</p>
+  <div id="gateBtns"></div>
+</div>
+<div id="app" style="display:none">
+<h1 id="pagetitle"></h1>
+<p style="color:var(--mut);margin:4px 0 0;font-size:13px" data-t="official"></p>
+<div class="card" id="supBanner" style="display:none;border-color:rgba(245,158,11,.55)">
+  <h2 style="color:#f59e0b;margin:0 0 6px;font-size:17px"><span id="supName"></span> — <span data-t="needMore"></span></h2>
+  <p style="margin:0;white-space:pre-line" id="supReason"></p>
+</div>
+<div class="card deal">
+  <div class="row"><span data-t="lBike"></span><b id="bikeName"></b></div>
+</div>
+
+<div class="card" id="contractCard">
+  <h3 style="margin:0 0 8px" data-t="chooseContract"></h3>
+  <div id="ctRto" class="ctopt" data-ct="rent_to_own">
+    <b data-t="rtoTitle"></b><div class="ctp" id="rtoPrice"></div><div class="ctt" id="rtoTerm"></div>
+    <div class="ctna" id="rtoNa" style="display:none" data-t="noRtoStock"></div>
+  </div>
+  <div id="ctRental" class="ctopt" data-ct="rental_only">
+    <b data-t="rentalTitle"></b><div class="ctp" id="rentalPrice"></div><div class="ctt" id="rentalTerm"></div>
+    <div class="ctna" id="rentalNa" style="display:none" data-t="noRentalStock"></div>
+  </div>
+</div>
+
+<form id="f" novalidate>
+<div id="mainOnly">
+<div class="card">
+  <h3 style="margin:0 0 4px" data-t="yourDetails"></h3>
+  <label class="req" data-t="firstName"></label><input name="firstName">
+  <label class="req" data-t="lastName"></label><input name="lastName">
+  <label class="req" data-t="phone"></label>
+  <div style="display:flex;gap:8px">
+    <select name="phoneCC" style="flex:0 0 128px">
+      <option value="+27" selected>🇿🇦 +27</option>
+      <option value="+243">🇨🇩 +243</option>
+      <option value="+257">🇧🇮 +257</option>
+      <option value="+265">🇲🇼 +265</option>
+      <option value="+263">🇿🇼 +263</option>
+      <option value="+255">🇹🇿 +255</option>
+      <option value="+254">🇰🇪 +254</option>
+      <option value="+260">🇿🇲 +260</option>
+      <option value="+258">🇲🇿 +258</option>
+      <option value="+266">🇱🇸 +266</option>
+      <option value="+268">🇸🇿 +268</option>
+    </select>
+    <input name="phone" type="tel" placeholder="73 123 4567" style="flex:1">
+  </div>
+  <label class="req" data-t="email"></label><input name="email" type="email" placeholder="you@gmail.com">
+  <label class="req" data-t="idType"></label>
+  <select name="idType">
+    <option value="sa_id" data-t="saId"></option>
+    <option value="passport" data-t="passport"></option>
+    <option value="asylum" data-t="asylum"></option>
+  </select>
+  <label class="req" data-t="idNumber"></label><input name="idNumber">
+  <label class="req" data-t="dob"></label>
+  <div style="display:flex;gap:8px">
+    <select name="dob_d" style="flex:1"><option value="" data-t="dobDay"></option></select>
+    <select name="dob_m" style="flex:1.5"><option value="" data-t="dobMonth"></option></select>
+    <select name="dob_y" style="flex:1.2"><option value="" data-t="dobYear"></option></select>
+  </div>
+  <label class="req" data-t="address"></label><input name="address">
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 4px" data-t="deliveryExp"></h3>
+  <label class="req" data-t="platformQ"></label>
+  <select name="deliveryCompany">
+    <option value="" data-t="selectOne"></option>
+    <option value="uber">Uber Eats</option><option value="mr_d">Mr D</option>
+    <option value="checkers">Checkers Sixty60</option><option value="picup">Picup</option>
+    <option value="dash">Dash</option><option value="other">Own / Other</option>
+  </select>
+  <label class="req" data-t="earningsQ"></label>
+  <select name="earnings">
+    <option value="" data-t="selectOne"></option>
+    <option>Under R1000</option><option>R1000 - R2000</option>
+    <option>R2000 - R3500</option><option>Over R3500</option>
+  </select>
+  <label class="req" data-t="durationQ"></label>
+  <select name="duration">
+    <option value="" data-t="selectOne"></option>
+    <option>Less than 6 months</option><option>6 months - 1 year</option>
+    <option>1 - 2 years</option><option>Over 2 years</option>
+  </select>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 4px" data-t="referralTitle"></h3>
+  <p style="color:var(--mut);font-size:13px;margin:2px 0 0" data-t="referralHint"></p>
+  <label class="req" data-t="refName"></label><input name="referredBy">
+  <label class="req" data-t="refPhone"></label>
+  <div style="display:flex;gap:8px">
+    <select name="refCC" style="flex:0 0 128px">
+      <option value="+27" selected>🇿🇦 +27</option>
+      <option value="+243">🇨🇩 +243</option>
+      <option value="+257">🇧🇮 +257</option>
+      <option value="+265">🇲🇼 +265</option>
+      <option value="+263">🇿🇼 +263</option>
+      <option value="+255">🇹🇿 +255</option>
+      <option value="+254">🇰🇪 +254</option>
+      <option value="+260">🇿🇲 +260</option>
+      <option value="+258">🇲🇿 +258</option>
+      <option value="+266">🇱🇸 +266</option>
+      <option value="+268">🇸🇿 +268</option>
+    </select>
+    <input name="referredByPhone" type="tel" placeholder="73 123 4567" style="flex:1">
+  </div>
+</div>
+
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 4px" data-t="docsTitle"></h3>
+  <p style="color:var(--mut);font-size:13px;margin:2px 0 8px" data-t="docsHint"></p>
+  <p style="color:#f59e0b;font-size:12.5px;font-weight:700;margin:0 0 10px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)" data-t="docsForeignNote"></p>
+  <div id="docs"></div>
+  <div class="check"><input type="checkbox" id="nobank"><label for="nobank" style="margin:0;color:var(--txt)" data-t="noBank"></label></div>
+</div>
+
+<div class="card" id="supNote" style="display:none">
+  <label data-t="noteLabel"></label>
+  <textarea name="note" rows="3" data-tp="notePh"></textarea>
+</div>
+
+<div id="mainOnly2">
+<div class="card">
+  <h3 style="margin:0 0 4px" data-t="specialTitle"></h3>
+  <textarea name="special" rows="3" data-tp="specialPh"></textarea>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px" data-t="tcsTitle"></h3>
+  <div class="tcbox"><span data-t="tcsRead"></span><br>
+  <a id="tcslink" href="#" target="_blank" rel="noopener"><b data-t="tcsOpen"></b></a></div>
+  <div class="check"><input type="checkbox" id="tc"><label for="tc" style="margin:0;color:var(--txt)" class="req" data-t="tcsAccept"></label></div>
+  <div class="check"><input type="checkbox" id="mnt"><label for="mnt" style="margin:0;color:var(--txt)" class="req" data-t="maintAck"></label></div>
+  <div class="check"><input type="checkbox" id="drv"><label for="drv" style="margin:0;color:var(--txt)" class="req" data-t="drivingAck"></label></div>
+</div>
+</div>
+
+<input name="website" style="display:none" tabindex="-1" autocomplete="off">
+<div class="err" id="err"></div>
+<button class="btn" id="go" type="submit"></button>
+<p style="color:var(--mut);font-size:12px;text-align:center" data-t="privacy"></p>
+</form>
+
+<div class="success" id="done">
+  <h2 id="donetitle"></h2>
+  <p id="donemsg"></p>
+</div>
+</div>
+
+<script>
+const API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/apply-web";
+const I18N = {
+  en: {
+    title: "Apply for Your Bike", completeTitle: "Complete Your Application",
+    official: "Official application — reviewed personally by the Bike 4 U team.",
+    batch: "Only 20 bikes in this batch — strictly first come, first served. The first 20 complete applications that meet the requirements will be approved.",
+    lBike: "Bike", lPrice: "Price", lContract: "Contract", lCollection: "Collection",
+    priceVal: "R750 per week", termVal: "20-month Rent to Own contract",
+    evtVal: "Bike handover: Friday 17 July 2026 at 14:00",
+    yourDetails: "Your Details", firstName: "First name", lastName: "Last name",
+    phone: "WhatsApp / phone number", errPhone: "Please enter a valid phone number (7–10 digits after the country code).", email: "Email address",
+    idType: "ID type", saId: "South African ID", passport: "Passport", asylum: "Asylum Document",
+    idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
+    deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?", selectOne: "Select…",
+    earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
+    referralTitle: "Referral (REQUIRED)",
+    referralHint: "Every application needs a referral from an existing Bike 4 U driver. Enter their full name and phone number — we check this against our records and will contact them to confirm.",
+    refName: "Referrer's full name", errReferral: "Please enter your referrer's full name and a valid phone number — a referral from an existing Bike 4 U driver is required.", refPhone: "Referrer's phone number",
+    availQ: "Will you be available on Friday 17 July at 14:00 to collect your bike?",
+    availYes: "Yes — I will be there", availNo: "No — I can't make that time", altDayQ: "What day are you available?", altD1: "Saturday 18 July", altD2: "Monday 20 July", altD3: "Tuesday 21 July", altD4: "Wednesday 22 July", errAltDay: "Please choose the day you are available.",
+    docsTitle: "Documents", docsHint: "Clear photos or PDF scans. Max 8MB each.", docsForeignNote: "PLEASE NOTE: IF YOU ARE A FOREIGNER, YOU ARE REQUIRED TO SUBMIT EITHER YOUR VALID ASYLUM DOCUMENT OR VALID WORK PERMIT.",
+    d_id: "ID / Passport / Asylum document", d_lic: "Driver's license",
+    d_bank: "Bank statement (latest 3 months)", d_permit: "Work permit (if you have one)",
+    noBank: "I do not have a bank account / bank statement", already: "✓ already received",
+    specialTitle: "Special Requests / Notes (optional)", specialPh: "Anything else you want us to know?",
+    noteLabel: "Message for the Bike 4 U team (optional)", notePh: "Anything you'd like to add...",
+    tcsTitle: "Terms & Conditions", tcsRead: "Please read the full contract terms before applying:",
+    tcsOpen: "📄 Open the Terms & Conditions (PDF)",
+    tcsAccept: "I have read and accept the Terms & Conditions", maintAck: "I understand that service and general repairs and maintenance is for me (the rider) to attend to.", errMaint: "Please tick that you understand repairs and maintenance are your responsibility.", drivingAck: "I acknowledge that bad driving or receiving more than 3 speeding fines will lead to automatic cancellation of my contract and the bike being returned.", errDriving: "Please tick that you accept the bad-driving / speeding-fines cancellation rule.", chooseContract: "Choose your contract", rtoTitle: "Rent to Own", rentalTitle: "Rental Only", noRtoStock: "Currently no new bikes available for Rent to Own — please check back soon or apply for Rental.", noRentalStock: "Currently no rental bikes available — please check back soon.", errContract: "Please choose Rent to Own or Rental.",
+    submit: "Submit My Application", send: "Send to Bike 4 U", submitting: "Submitting…",
+    uploadingBtn: "Uploading documents…", retryBtn: "Retry failed uploads",
+    uploading: "Uploading…", uploaded: "✓ Uploaded", tooBig: "File too big (max 8MB)",
+    upFailed: "Upload failed", netRetry: "Network problem — retrying…",
+    successTitle: "✅ Application received!",
+    successBody: "Thank you — the Bike 4 U team will review your application and contact you on WhatsApp. Keep your phone close!",
+    supSuccessTitle: "✅ Received — thank you!",
+    supSuccessBody: "Your documents have been sent to the Bike 4 U team. We'll be in touch on WhatsApp.",
+    errRequired: "Please fill in all required fields marked with *.",
+    errEmail: "Please enter a valid email address.",
+    errAvail: "Please answer the availability question.",
+    errTcs: "Please read and accept the Terms & Conditions first.",
+    errIdDoc: "Please upload your ID / Passport / Asylum document.",
+    errLicense: "Please upload your driver's license.",
+    errBank: "Please upload a bank statement, or tick that you don't have a bank account.",
+    errNetwork: "Network problem — please check your connection and try again.",
+    errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
+    errAttach: "Please attach at least one document or write a message.",
+    needMore: "we need a little more from you",
+    needMoreDefault: "Please upload the outstanding documents below.",
+    privacy: "Your information is only used for your Bike 4 U application.",
+  },
+  fr: {
+    title: "Postulez pour votre moto", completeTitle: "Complétez votre candidature",
+    official: "Candidature officielle — examinée personnellement par l'équipe Bike 4 U.",
+    batch: "Seulement 20 motos dans ce lot — strictement premier arrivé, premier servi. Les 20 premières candidatures complètes et conformes seront approuvées.",
+    lBike: "Moto", lPrice: "Prix", lContract: "Contrat", lCollection: "Remise",
+    priceVal: "R750 par semaine", termVal: "Contrat Rent to Own de 20 mois",
+    evtVal: "Remise des motos : vendredi 17 juillet 2026 à 14h00",
+    yourDetails: "Vos informations", firstName: "Prénom", lastName: "Nom",
+    phone: "Numéro WhatsApp / téléphone", errPhone: "Veuillez saisir un numéro de téléphone valide (7 à 10 chiffres après l'indicatif).", email: "Adresse e-mail",
+    idType: "Type de pièce", saId: "Carte d'identité sud-africaine", passport: "Passeport", asylum: "Document d'asile",
+    idNumber: "Numéro d'identité / passeport / asile", dob: "Date de naissance", dobDay: "Jour", dobMonth: "Mois", dobYear: "Année", address: "Adresse du domicile",
+    deliveryExp: "Expérience de livraison", platformQ: "Pour quelle plateforme livrez-vous ?", selectOne: "Choisissez…",
+    earningsQ: "Revenus hebdomadaires estimés", durationQ: "Depuis combien de temps faites-vous des livraisons ?",
+    referralTitle: "Parrainage (OBLIGATOIRE)",
+    referralHint: "Chaque candidature exige le parrainage d'un chauffeur Bike 4 U actuel. Indiquez son nom complet et son numéro — nous vérifions dans nos dossiers et le contacterons pour confirmer.",
+    refName: "Nom complet du parrain", errReferral: "Veuillez saisir le nom complet de votre parrain et un numéro valide — le parrainage d'un chauffeur Bike 4 U actuel est obligatoire.", refPhone: "Numéro de téléphone du parrain",
+    availQ: "Serez-vous disponible le vendredi 17 juillet à 14h00 pour récupérer votre moto ?",
+    availYes: "Oui — je serai là", availNo: "Non — je ne peux pas à cette heure", altDayQ: "Quel jour êtes-vous disponible ?", altD1: "samedi 18 juillet", altD2: "lundi 20 juillet", altD3: "mardi 21 juillet", altD4: "mercredi 22 juillet", errAltDay: "Veuillez choisir le jour où vous êtes disponible.",
+    docsTitle: "Documents", docsHint: "Photos nettes ou scans PDF. Max 8 Mo chacun.", docsForeignNote: "VEUILLEZ NOTER : SI VOUS ÊTES ÉTRANGER, VOUS DEVEZ SOUMETTRE SOIT VOTRE DOCUMENT D'ASILE VALIDE, SOIT VOTRE PERMIS DE TRAVAIL VALIDE.",
+    d_id: "Pièce d'identité / passeport / document d'asile", d_lic: "Permis de conduire",
+    d_bank: "Relevé bancaire (3 derniers mois)", d_permit: "Permis de travail (si vous en avez un)",
+    noBank: "Je n'ai pas de compte bancaire / relevé bancaire", already: "✓ déjà reçu",
+    specialTitle: "Demandes spéciales / Notes (facultatif)", specialPh: "Autre chose que vous voulez nous dire ?",
+    noteLabel: "Message pour l'équipe Bike 4 U (facultatif)", notePh: "Ce que vous souhaitez ajouter...",
+    tcsTitle: "Termes et conditions", tcsRead: "Veuillez lire les conditions complètes du contrat avant de postuler :",
+    tcsOpen: "📄 Ouvrir les termes et conditions (PDF)",
+    tcsAccept: "J'ai lu et j'accepte les termes et conditions", maintAck: "Je comprends que l'entretien, les r\u00e9parations g\u00e9n\u00e9rales et la maintenance sont \u00e0 ma charge (le conducteur).", errMaint: "Veuillez cocher que vous comprenez que les r\u00e9parations et l'entretien sont \u00e0 votre charge.", drivingAck: "Je reconnais que la mauvaise conduite ou plus de 3 amendes pour excès de vitesse entraînera l’annulation automatique de mon contrat et la restitution de la moto.", errDriving: "Veuillez cocher que vous acceptez la règle d’annulation pour mauvaise conduite / excès de vitesse.", chooseContract: "Choisissez votre contrat", rtoTitle: "Rent to Own (location-vente)", rentalTitle: "Location simple", noRtoStock: "Aucune moto neuve disponible pour le Rent to Own actuellement — revenez bientôt ou choisissez la location.", noRentalStock: "Aucune moto de location disponible actuellement — revenez bientôt.", errContract: "Veuillez choisir Rent to Own ou Location.",
+    submit: "Envoyer ma candidature", send: "Envoyer à Bike 4 U", submitting: "Envoi en cours…",
+    uploadingBtn: "Envoi des documents…", retryBtn: "Réessayer les envois échoués",
+    uploading: "Envoi…", uploaded: "✓ Envoyé", tooBig: "Fichier trop volumineux (max 8 Mo)",
+    upFailed: "Échec de l'envoi", netRetry: "Problème de réseau — nouvelle tentative…",
+    successTitle: "✅ Candidature reçue !",
+    successBody: "Merci — l'équipe Bike 4 U examinera votre candidature et vous contactera sur WhatsApp. Gardez votre téléphone près de vous !",
+    supSuccessTitle: "✅ Bien reçu — merci !",
+    supSuccessBody: "Vos documents ont été envoyés à l'équipe Bike 4 U. Nous vous contacterons sur WhatsApp.",
+    errRequired: "Veuillez remplir tous les champs obligatoires marqués d'un *.",
+    errEmail: "Veuillez saisir une adresse e-mail valide.",
+    errAvail: "Veuillez répondre à la question de disponibilité.",
+    errTcs: "Veuillez d'abord lire et accepter les termes et conditions.",
+    errIdDoc: "Veuillez téléverser votre pièce d'identité / passeport / document d'asile.",
+    errLicense: "Veuillez téléverser votre permis de conduire.",
+    errBank: "Veuillez téléverser un relevé bancaire, ou cochez que vous n'avez pas de compte bancaire.",
+    errNetwork: "Problème de réseau — vérifiez votre connexion et réessayez.",
+    errSomeDocs: "Certains documents n'ont pas été envoyés — appuyez sur le bouton pour réessayer. Votre candidature a bien été reçue.",
+    errAttach: "Veuillez joindre au moins un document ou écrire un message.",
+    needMore: "nous avons besoin d'un complément",
+    needMoreDefault: "Veuillez téléverser les documents manquants ci-dessous.",
+    privacy: "Vos informations ne sont utilisées que pour votre candidature Bike 4 U.",
+  },
+  sw: {
+    title: "Omba Pikipiki Yako", completeTitle: "Kamilisha Maombi Yako",
+    official: "Maombi rasmi — yanakaguliwa binafsi na timu ya Bike 4 U.",
+    batch: "Pikipiki 20 tu katika kundi hili — wa kwanza kufika, wa kwanza kuhudumiwa. Maombi 20 ya kwanza yaliyokamilika na kukidhi masharti yataidhinishwa.",
+    lBike: "Pikipiki", lPrice: "Bei", lContract: "Mkataba", lCollection: "Kukabidhiwa",
+    priceVal: "R750 kwa wiki", termVal: "Mkataba wa Rent to Own wa miezi 20",
+    evtVal: "Kukabidhiwa kwa pikipiki: Ijumaa 17 Julai 2026 saa 14:00",
+    yourDetails: "Taarifa Zako", firstName: "Jina la kwanza", lastName: "Jina la ukoo",
+    phone: "Namba ya WhatsApp / simu", errPhone: "Tafadhali andika namba sahihi ya simu (tarakimu 7–10 baada ya msimbo wa nchi).", email: "Barua pepe",
+    idType: "Aina ya kitambulisho", saId: "Kitambulisho cha Afrika Kusini", passport: "Pasipoti", asylum: "Hati ya Ukimbizi",
+    idNumber: "Namba ya kitambulisho / pasipoti / ukimbizi", dob: "Tarehe ya kuzaliwa", dobDay: "Siku", dobMonth: "Mwezi", dobYear: "Mwaka", address: "Anwani ya nyumbani",
+    deliveryExp: "Uzoefu wa Usafirishaji", platformQ: "Unasafirisha kwa jukwaa gani?", selectOne: "Chagua…",
+    earningsQ: "Makadirio ya mapato ya wiki", durationQ: "Umefanya kazi ya usafirishaji kwa muda gani?",
+    referralTitle: "Rufaa (LAZIMA)",
+    referralHint: "Kila maombi yanahitaji rufaa kutoka kwa dereva wa sasa wa Bike 4 U. Andika jina lake kamili na namba ya simu — tunathibitisha kwenye kumbukumbu zetu na tutawasiliana naye kuthibitisha.",
+    refName: "Jina kamili la aliyekupendekeza", errReferral: "Tafadhali andika jina kamili la aliyekupendekeza na namba sahihi ya simu — rufaa kutoka kwa dereva wa Bike 4 U ni lazima.", refPhone: "Namba ya simu ya aliyekupendekeza",
+    availQ: "Je, utapatikana Ijumaa tarehe 17 Julai saa 14:00 kuchukua pikipiki yako?",
+    availYes: "Ndiyo — nitakuwepo", availNo: "Hapana — siwezi wakati huo", altDayQ: "Utapatikana siku gani?", altD1: "Jumamosi 18 Julai", altD2: "Jumatatu 20 Julai", altD3: "Jumanne 21 Julai", altD4: "Jumatano 22 Julai", errAltDay: "Tafadhali chagua siku utakayopatikana.",
+    docsTitle: "Nyaraka", docsHint: "Picha wazi au skani za PDF. Kila moja isizidi 8MB.", docsForeignNote: "TAFADHALI KUMBUKA: IKIWA WEWE NI MGENI, UNATAKIWA KUWASILISHA HATI YAKO HALALI YA UKIMBIZI AU KIBALI HALALI CHA KAZI.",
+    d_id: "Kitambulisho / pasipoti / hati ya ukimbizi", d_lic: "Leseni ya udereva",
+    d_bank: "Taarifa ya benki (miezi 3 ya mwisho)", d_permit: "Kibali cha kazi (kama unacho)",
+    noBank: "Sina akaunti ya benki / taarifa ya benki", already: "✓ imepokelewa tayari",
+    specialTitle: "Maombi Maalum / Maelezo (hiari)", specialPh: "Kuna kingine unataka tujue?",
+    noteLabel: "Ujumbe kwa timu ya Bike 4 U (hiari)", notePh: "Chochote unachotaka kuongeza...",
+    tcsTitle: "Vigezo na Masharti", tcsRead: "Tafadhali soma masharti kamili ya mkataba kabla ya kuomba:",
+    tcsOpen: "📄 Fungua Vigezo na Masharti (PDF)",
+    tcsAccept: "Nimesoma na ninakubali Vigezo na Masharti", maintAck: "Ninaelewa kuwa huduma, matengenezo ya kawaida na utunzaji ni jukumu langu (dereva).", errMaint: "Tafadhali weka alama kuwa unaelewa matengenezo na utunzaji ni jukumu lako.", drivingAck: "Ninakiri kuwa uendeshaji mbaya au kupata faini zaidi ya 3 za mwendo kasi kutasababisha kufutwa kiotomatiki kwa mkataba wangu na pikipiki kurudishwa.", errDriving: "Tafadhali weka alama kuwa unakubali sharti la kufutwa kwa uendeshaji mbaya / faini za mwendo kasi.", chooseContract: "Chagua mkataba wako", rtoTitle: "Rent to Own (kununua polepole)", rentalTitle: "Kukodisha tu", noRtoStock: "Kwa sasa hakuna pikipiki mpya za Rent to Own — rudi hivi karibuni au omba kukodisha.", noRentalStock: "Kwa sasa hakuna pikipiki za kukodisha — rudi hivi karibuni.", errContract: "Tafadhali chagua Rent to Own au Kukodisha.",
+    submit: "Tuma Maombi Yangu", send: "Tuma kwa Bike 4 U", submitting: "Inatuma…",
+    uploadingBtn: "Inapakia nyaraka…", retryBtn: "Jaribu tena zilizoshindikana",
+    uploading: "Inapakia…", uploaded: "✓ Imepakiwa", tooBig: "Faili kubwa mno (max 8MB)",
+    upFailed: "Upakiaji umeshindikana", netRetry: "Tatizo la mtandao — inajaribu tena…",
+    successTitle: "✅ Maombi yamepokelewa!",
+    successBody: "Asante — timu ya Bike 4 U itakagua maombi yako na kuwasiliana nawe kupitia WhatsApp. Weka simu yako karibu!",
+    supSuccessTitle: "✅ Imepokelewa — asante!",
+    supSuccessBody: "Nyaraka zako zimetumwa kwa timu ya Bike 4 U. Tutawasiliana nawe kupitia WhatsApp.",
+    errRequired: "Tafadhali jaza sehemu zote muhimu zenye alama ya *.",
+    errEmail: "Tafadhali andika barua pepe sahihi.",
+    errAvail: "Tafadhali jibu swali la upatikanaji.",
+    errTcs: "Tafadhali soma na ukubali Vigezo na Masharti kwanza.",
+    errIdDoc: "Tafadhali pakia kitambulisho / pasipoti / hati ya ukimbizi.",
+    errLicense: "Tafadhali pakia leseni yako ya udereva.",
+    errBank: "Tafadhali pakia taarifa ya benki, au weka alama kuwa huna akaunti ya benki.",
+    errNetwork: "Tatizo la mtandao — angalia muunganisho wako na ujaribu tena.",
+    errSomeDocs: "Baadhi ya nyaraka hazikupakiwa — bonyeza kitufe kujaribu tena. Maombi yako YAMEPOKELEWA.",
+    errAttach: "Tafadhali ambatisha angalau nyaraka moja au andika ujumbe.",
+    needMore: "tunahitaji taarifa zaidi kutoka kwako",
+    needMoreDefault: "Tafadhali pakia nyaraka zinazokosekana hapa chini.",
+    privacy: "Taarifa zako zinatumika tu kwa maombi yako ya Bike 4 U.",
+  },
+  rn: {
+    title: "Saba Ipikipiki Yawe", completeTitle: "Rangiza Ubusabe Bwawe",
+    official: "Ubusabe bwemewe — busuzumwa n'umurwi wa Bike 4 U ubwawo.",
+    batch: "Amapikipiki 20 gusa muri iri tsinda — uwashitse imbere ni we abanza. Ubusabe 20 bwa mbere bwuzuye kandi bukwije ibisabwa ni bwo buzokwemezwa.",
+    lBike: "Ipikipiki", lPrice: "Igiciro", lContract: "Amasezerano", lCollection: "Itangwa",
+    priceVal: "R750 ku ndwi", termVal: "Amasezerano ya Rent to Own y'amezi 20",
+    evtVal: "Itangwa ry'amapikipiki: ku wa gatanu 17 Mukakaro 2026 isaha 14:00",
+    yourDetails: "Amakuru Yawe", firstName: "Izina rya mbere", lastName: "Izina ry'umuryango",
+    phone: "Inomero ya WhatsApp / terefone", errPhone: "Andika inomero ya terefone yo kuri (imibare 7–10 inyuma y'agasimbo k'igihugu).", email: "Imeyili",
+    idType: "Ubwoko bw'ikarata", saId: "Ikarata y'Afrika y'Epfo", passport: "Pasiporo", asylum: "Icangombwa c'ubuhungiro",
+    idNumber: "Inomero y'ikarata / pasiporo / ubuhungiro", dob: "Itariki y'amavuko", dobDay: "Umusi", dobMonth: "Ukwezi", dobYear: "Umwaka", address: "Aho uba",
+    deliveryExp: "Uburambe mu Gutwara", platformQ: "Ukorera iyihe porogaramu?", selectOne: "Hitamwo…",
+    earningsQ: "Amahera yinjira ku ndwi", durationQ: "Umaze igihe kingana iki mu gutwara ibintu?",
+    referralTitle: "Uwakurungitse (BITEGETSWE)",
+    referralHint: "Ubusabe bwose butegerezwa kurungikwa n'umushoferi wa Bike 4 U ariho ubu. Andika izina ryiwe ryose n'inomero ya terefone — turabisuzuma kandi tuzomuvugisha kugira yemeze.",
+    refName: "Izina ryose ry'uwakurungitse", errReferral: "Andika izina ryose ry'uwakurungitse n'inomero ya terefone yo kuri — gukurungikwa n'umushoferi wa Bike 4 U birategetswe.", refPhone: "Inomero ya terefone y'uwakurungitse",
+    availQ: "Uzoba uhari ku wa gatanu itariki 17 Mukakaro isaha ya 14:00 gutora ipikipiki yawe?",
+    availYes: "Ego — nzoba ndi ho", availNo: "Oya — sinshobora ico gihe", altDayQ: "Uzoboneka uwuhe musi?", altD1: "Ku wa gatandatu 18 Mukakaro", altD2: "Ku wa mbere 20 Mukakaro", altD3: "Ku wa kabiri 21 Mukakaro", altD4: "Ku wa gatatu 22 Mukakaro", errAltDay: "Hitamwo umusi uzoboneka.",
+    docsTitle: "Ivyangombwa", docsHint: "Amafoto atomoye canke PDF. Kimwe ntikirenge 8MB.", docsForeignNote: "MENYA NEZA: NIBA URI UMUNYAMAHANGA, UTEGEREZWA GUTANGA ICANGOMBWA CAWE C'UBUHUNGIRO KIRIHO CANKE URUHUSHYA RW'AKAZI RURIHO.",
+    d_id: "Ikarata / pasiporo / icangombwa c'ubuhungiro", d_lic: "Uruhushya rwo gutwara",
+    d_bank: "Urupapuro rwa banki (amezi 3 aheruka)", d_permit: "Uruhushya rw'akazi (niba urufise)",
+    noBank: "Nta konti ya banki / urupapuro rwa banki mfise", already: "✓ vyamaze kwakirwa",
+    specialTitle: "Ivyifuzo Bidasanzwe / Utujambo (si itegeko)", specialPh: "Hari ikindi wipfuza ko tumenya?",
+    noteLabel: "Ubutumwa ku murwi wa Bike 4 U (si itegeko)", notePh: "Ico wipfuza kwongerako...",
+    tcsTitle: "Amategeko n'Ibisabwa", tcsRead: "Turakwinginze usome amategeko yose y'amasezerano imbere yo gusaba:",
+    tcsOpen: "📄 Fungura Amategeko n'Ibisabwa (PDF)",
+    tcsAccept: "Ndasomye kandi ndemera Amategeko n'Ibisabwa", maintAck: "Ndatahura ko gusanura, ugukanika no kubungabunga ipikipiki ari ibanga ryanje (umushoferi).", errMaint: "Emeza ko utahura ko ugukanika no kubungabunga ari ibanga ryawe.", drivingAck: "Ndemera ko ugutwara nabi canke guhabwa amande arenga 3 y’umuvuduko bizotuma amasezerano yanje ahagarikwa ubwayo n’ipikipiki igasubizwa.", errDriving: "Emeza ko wemera itegeko ryo guhagarika kubera ugutwara nabi / amande y’umuvuduko.", chooseContract: "Hitamwo amasezerano yawe", rtoTitle: "Rent to Own (kugura buhoro)", rentalTitle: "Ukukodesha gusa", noRtoStock: "Ubu nta pikipiki nshasha za Rent to Own zihari — garuka vuba canke usabe ugukodesha.", noRentalStock: "Ubu nta pikipiki zo gukodesha zihari — garuka vuba.", errContract: "Hitamwo Rent to Own canke Ugukodesha.",
+    submit: "Rungika Ubusabe Bwanje", send: "Rungika kuri Bike 4 U", submitting: "Birarungikwa…",
+    uploadingBtn: "Ivyangombwa birapakirwa…", retryBtn: "Subira ugerageze ivyanse",
+    uploading: "Birapakirwa…", uploaded: "✓ Vyapakiwe", tooBig: "Idosiye ni nini cane (max 8MB)",
+    upFailed: "Gupakira vyanse", netRetry: "Ingorane ya internet — birasubirwamwo…",
+    successTitle: "✅ Ubusabe bwakiriwe!",
+    successBody: "Urakoze — umurwi wa Bike 4 U uzosuzuma ubusabe bwawe hanyuma ukuvugishe kuri WhatsApp. Guma hafi ya terefone yawe!",
+    supSuccessTitle: "✅ Vyakiriwe — urakoze!",
+    supSuccessBody: "Ivyangombwa vyawe vyarungitswe ku murwi wa Bike 4 U. Tuzokuvugisha kuri WhatsApp.",
+    errRequired: "Uzuza ibisabwa vyose biriko akamenyetso *.",
+    errEmail: "Andika imeyili y'ukuri.",
+    errAvail: "Ishura ikibazo c'ukuboneka.",
+    errTcs: "Banza usome kandi wemere Amategeko n'Ibisabwa.",
+    errIdDoc: "Pakira ikarata / pasiporo / icangombwa c'ubuhungiro.",
+    errLicense: "Pakira uruhushya rwawe rwo gutwara.",
+    errBank: "Pakira urupapuro rwa banki, canke wemeze ko ata konti ya banki ufise.",
+    errNetwork: "Ingorane ya internet — raba umuyoboro wawe hanyuma usubire ugerageze.",
+    errSomeDocs: "Ivyangombwa bimwe ntivyapakiwe — fyonda buto usubire ugerageze. Ubusabe bwawe bwamaze kwakirwa.",
+    errAttach: "Shiramwo n'imiburiburi icangombwa kimwe canke wandike ubutumwa.",
+    needMore: "dukeneye ayandi makuru kuri wewe",
+    needMoreDefault: "Pakira ivyangombwa bibura aho munsi.",
+    privacy: "Amakuru yawe akoreshwa gusa ku busabe bwawe bwa Bike 4 U.",
+  },
+  ny: {
+    title: "Pemphani Njinga Yanu", completeTitle: "Malizani Pempho Lanu",
+    official: "Pempho lovomerezeka — limawunikidwa ndi gulu la Bike 4 U.",
+    batch: "Njinga 20 zokha mu gulu ili — woyamba kufika, woyamba kuthandizidwa. Mapempho 20 oyamba okwanira ndi ovomerezeka adzavomerezedwa.",
+    lBike: "Njinga", lPrice: "Mtengo", lContract: "Mgwirizano", lCollection: "Kulandira",
+    priceVal: "R750 pa sabata", termVal: "Mgwirizano wa Rent to Own wa miyezi 20",
+    evtVal: "Kulandira njinga: Lachisanu 17 July 2026 nthawi ya 14:00",
+    yourDetails: "Zambiri Zanu", firstName: "Dzina loyamba", lastName: "Dzina lomaliza",
+    phone: "Nambala ya WhatsApp / foni", errPhone: "Chonde lembani nambala yolondola ya foni (manambala 7–10 pambuyo pa kodi ya dziko).", email: "Imelo",
+    idType: "Mtundu wa chizindikiritso", saId: "ID ya South Africa", passport: "Pasipoti", asylum: "Chikalata cha Othawa",
+    idNumber: "Nambala ya ID / pasipoti / othawa", dob: "Tsiku lobadwa", dobDay: "Tsiku", dobMonth: "Mwezi", dobYear: "Chaka", address: "Adilesi ya kwanu",
+    deliveryExp: "Zochitika pa Kutumiza", platformQ: "Mumagwirira ntchito nsanja iti?", selectOne: "Sankhani…",
+    earningsQ: "Ndalama zomwe mumapeza pa sabata", durationQ: "Mwakhala mukutumiza kwa nthawi yayitali bwanji?",
+    referralTitle: "Kutumizidwa (KOFUNIKIRA)",
+    referralHint: "Pempho lililonse limafuna kutumizidwa ndi dalaivala wa Bike 4 U wapano. Lembani dzina lake lonse ndi nambala ya foni — timatsimikizira m'mabuku athu ndipo tidzamuyimbira kutsimikizira.",
+    refName: "Dzina lonse la amene anakutumizani", errReferral: "Chonde lembani dzina lonse la amene anakutumizani ndi nambala yolondola — kutumizidwa ndi dalaivala wa Bike 4 U ndikofunikira.", refPhone: "Nambala ya foni ya amene anakutumizani",
+    availQ: "Kodi mudzapezeka Lachisanu pa 17 July nthawi ya 14:00 kudzatenga njinga yanu?",
+    availYes: "Inde — ndidzakhalapo", availNo: "Ayi — sindingathe nthawi imeneyo", altDayQ: "Mudzapezeka tsiku liti?", altD1: "Loweruka 18 July", altD2: "Lolemba 20 July", altD3: "Lachiwiri 21 July", altD4: "Lachitatu 22 July", errAltDay: "Chonde sankhani tsiku lomwe mudzapezeka.",
+    docsTitle: "Zikalata", docsHint: "Zithunzi zomveka kapena PDF. Iliyonse isapitirire 8MB.", docsForeignNote: "CHONDE DZIWANI: NGATI NDINU MLENDO, MUYENERA KUPEREKA CHIKALATA CHANU CHA OTHAWA CHOVOMEREZEKA KAPENA CHILOLEZO CHA NTCHITO CHOVOMEREZEKA.",
+    d_id: "ID / pasipoti / chikalata cha othawa", d_lic: "Laisensi yoyendetsa",
+    d_bank: "Bank statement (miyezi 3 yapitayi)", d_permit: "Chilolezo cha ntchito (ngati muli nacho)",
+    noBank: "Ndilibe akaunti ya banki / bank statement", already: "✓ zalandiridwa kale",
+    specialTitle: "Zopempha Zapadera / Ndemanga (mukafuna)", specialPh: "Kodi pali china chomwe mukufuna tidziwe?",
+    noteLabel: "Uthenga kwa gulu la Bike 4 U (mukafuna)", notePh: "Chilichonse chomwe mukufuna kuonjezera...",
+    tcsTitle: "Malamulo ndi Zikhalidwe", tcsRead: "Chonde werengani malamulo onse a mgwirizano musanapemphe:",
+    tcsOpen: "📄 Tsegulani Malamulo ndi Zikhalidwe (PDF)",
+    tcsAccept: "Ndawerenga ndipo ndikuvomereza Malamulo ndi Zikhalidwe", maintAck: "Ndikumvetsa kuti kukonza, kukonzanso kwa wamba ndi kusamalira njinga ndi udindo wanga (woyendetsa).", errMaint: "Chonde sankhani kuti mukumvetsa kuti kukonza ndi kusamalira ndi udindo wanu.", drivingAck: "Ndikuvomereza kuti kuyendetsa moyipa kapena kulandira zilango zoposa 3 za liwiro kudzachititsa kuti mgwirizano wanga uthe zokha ndipo njinga ibwezedwe.", errDriving: "Chonde sankhani kuti mukuvomereza lamulo lothetsa chifukwa cha kuyendetsa moyipa / zilango za liwiro.", chooseContract: "Sankhani mgwirizano wanu", rtoTitle: "Rent to Own (kugula pang'onopang'ono)", rentalTitle: "Kubwereka kokha", noRtoStock: "Pakali pano palibe njinga zatsopano za Rent to Own — bwerani posachedwa kapena pemphani kubwereka.", noRentalStock: "Pakali pano palibe njinga zobwereka — bwerani posachedwa.", errContract: "Chonde sankhani Rent to Own kapena Kubwereka.",
+    submit: "Tumizani Pempho Langa", send: "Tumizani kwa Bike 4 U", submitting: "Likutumizidwa…",
+    uploadingBtn: "Zikalata zikukwezedwa…", retryBtn: "Yesaninso zomwe zalephera",
+    uploading: "Ikukwezedwa…", uploaded: "✓ Yakwezedwa", tooBig: "Fayilo yayikulu kwambiri (max 8MB)",
+    upFailed: "Kukweza kwalephera", netRetry: "Vuto la intaneti — ikuyesanso…",
+    successTitle: "✅ Pempho lalandiridwa!",
+    successBody: "Zikomo — gulu la Bike 4 U liwunika pempho lanu ndikukulumikizanani pa WhatsApp. Sungani foni yanu pafupi!",
+    supSuccessTitle: "✅ Zalandiridwa — zikomo!",
+    supSuccessBody: "Zikalata zanu zatumizidwa kwa gulu la Bike 4 U. Tikulumikizanani pa WhatsApp.",
+    errRequired: "Chonde lembani zonse zofunikira zokhala ndi *.",
+    errEmail: "Chonde lembani imelo yolondola.",
+    errAvail: "Chonde yankhani funso la kupezeka.",
+    errTcs: "Chonde werengani ndi kuvomereza Malamulo ndi Zikhalidwe kaye.",
+    errIdDoc: "Chonde kwezani ID / pasipoti / chikalata cha othawa.",
+    errLicense: "Chonde kwezani laisensi yanu yoyendetsa.",
+    errBank: "Chonde kwezani bank statement, kapena sankhani kuti mulibe akaunti ya banki.",
+    errNetwork: "Vuto la intaneti — onani kulumikizana kwanu ndikuyesaninso.",
+    errSomeDocs: "Zikalata zina sizinakwere — dinani batani kuti muyesenso. Pempho lanu LALANDIRIDWA.",
+    errAttach: "Chonde ikani chikalata chimodzi kapena lembani uthenga.",
+    needMore: "tikufuna zambiri kuchokera kwa inu",
+    needMoreDefault: "Chonde kwezani zikalata zosowa pansipa.",
+    privacy: "Zambiri zanu zimagwiritsidwa ntchito pa pempho lanu la Bike 4 U lokha.",
+  },
+  sn: {
+    title: "Kumbira Mudhudhudhu Wako", completeTitle: "Pedzisa Chikumbiro Chako",
+    official: "Chikumbiro chepamutemo — chinoongororwa nechikwata cheBike 4 U.",
+    batch: "Midhudhudhu 20 chete mudanho rino — anotanga kusvika, anotanga kubatsirwa. Zvikumbiro 20 zvekutanga zvakazara uye zvinokwanisa zvichabvumirwa.",
+    lBike: "Mudhudhudhu", lPrice: "Mutengo", lContract: "Chibvumirano", lCollection: "Kutora",
+    priceVal: "R750 pavhiki", termVal: "Chibvumirano cheRent to Own chemwedzi 20",
+    evtVal: "Kutora midhudhudhu: Chishanu 17 July 2026 na14:00",
+    yourDetails: "Ruzivo Rwako", firstName: "Zita rekutanga", lastName: "Zita remhuri",
+    phone: "Nhamba yeWhatsApp / runhare", errPhone: "Ndapota nyora nhamba chaiyo yerunhare (manhamba 7–10 mushure mekodhi yenyika).", email: "Email",
+    idType: "Rudzi rwechitupa", saId: "Chitupa cheSouth Africa", passport: "Pasipoti", asylum: "Gwaro reAsylum",
+    idNumber: "Nhamba yechitupa / pasipoti / asylum", dob: "Zuva rekuzvarwa", dobDay: "Zuva", dobMonth: "Mwedzi", dobYear: "Gore", address: "Kero yepamba",
+    deliveryExp: "Ruzivo rweKutakura", platformQ: "Unoshandira platform ipi?", selectOne: "Sarudza…",
+    earningsQ: "Mari inofungidzirwa pavhiki", durationQ: "Wave nenguva yakareba sei uchiita zvekutakura?",
+    referralTitle: "Kusumwa (KUNODIWA)",
+    referralHint: "Chikumbiro chese chinoda kusumwa nemutyairi weBike 4 U aripo. Nyora zita rake rizere nenhamba yerunhare — tinosimbisa mumabhuku edu uye tichamubata kuti asimbise.",
+    refName: "Zita rizere reakusuma", errReferral: "Ndapota nyora zita rizere reakusuma nenhamba chaiyo — kusumwa nemutyairi weBike 4 U kunodiwa.", refPhone: "Nhamba yerunhare yeakusuma",
+    availQ: "Uchawanikwa here neChishanu 17 July na14:00 kuzotora mudhudhudhu wako?",
+    availYes: "Hongu — ndichavapo", availNo: "Kwete — handikwanisi nguva iyoyo", altDayQ: "Uchawanikwa zuva ripi?", altD1: "Mugovera 18 July", altD2: "Muvhuro 20 July", altD3: "Chipiri 21 July", altD4: "Chitatu 22 July", errAltDay: "Ndapota sarudza zuva rauchawanikwa.",
+    docsTitle: "Magwaro", docsHint: "Mifananidzo yakajeka kana PDF. Rimwe nerimwe risapfuura 8MB.", docsForeignNote: "NDAPOTA ZIVA: KANA URI MUTORWA, UNOFANIRA KUPA GWARO RAKO REASYLUM RINOSHANDA KANA WORK PERMIT INOSHANDA.",
+    d_id: "Chitupa / pasipoti / gwaro reasylum", d_lic: "Rezinesi rekutyaira",
+    d_bank: "Bank statement (mwedzi 3 yapfuura)", d_permit: "Work permit (kana uinayo)",
+    noBank: "Handina akaunti yebhangi / bank statement", already: "✓ yatogamuchirwa",
+    specialTitle: "Zvikumbiro Zvakasarudzika / Mashoko (kana uchida)", specialPh: "Pane chimwe chaunoda kuti tizive?",
+    noteLabel: "Shoko kuchikwata cheBike 4 U (kana uchida)", notePh: "Chero chaunoda kuwedzera...",
+    tcsTitle: "Mitemo neMirayiridzo", tcsRead: "Ndapota verenga mitemo yese yechibvumirano usati wakumbira:",
+    tcsOpen: "📄 Vhura Mitemo neMirayiridzo (PDF)",
+    tcsAccept: "Ndaverenga uye ndinobvuma Mitemo neMirayiridzo", maintAck: "Ndinonzwisisa kuti kugadzirisa, kugadzirisa kwakajairika uye kuchengetedza mudhudhudhu ibasa rangu (mutyairi).", errMaint: "Ndapota sarudza kuti unonzwisisa kuti kugadzirisa nekuchengetedza ibasa rako.", drivingAck: "Ndinobvuma kuti kutyaira zvakaipa kana kuwana faindi dzinopfuura 3 dzekumhanyisa kuchaita kuti chibvumirano changu chikanzurwe chega uye mudhudhudhu udzorerwe.", errDriving: "Ndapota sarudza kuti unobvuma mutemo wekukanzura nekutyaira zvakaipa / faindi dzekumhanyisa.", chooseContract: "Sarudza chibvumirano chako", rtoTitle: "Rent to Own (kutenga zvishoma nezvishoma)", rentalTitle: "Kurenda chete", noRtoStock: "Parizvino hapana midhudhudhu mitsva yeRent to Own — dzoka munguva pfupi kana kumbira kurenda.", noRentalStock: "Parizvino hapana midhudhudhu yekurenda — dzoka munguva pfupi.", errContract: "Ndapota sarudza Rent to Own kana Kurenda.",
+    submit: "Tumira Chikumbiro Changu", send: "Tumira kuBike 4 U", submitting: "Chiri kutumirwa…",
+    uploadingBtn: "Magwaro ari kukwidzwa…", retryBtn: "Edza zvakakundikana zvakare",
+    uploading: "Riri kukwidzwa…", uploaded: "✓ Rakwidzwa", tooBig: "Faira ihombe zvakanyanya (max 8MB)",
+    upFailed: "Kukwidza kwakundikana", netRetry: "Dambudziko renetiweki — kuedza zvakare…",
+    successTitle: "✅ Chikumbiro chagamuchirwa!",
+    successBody: "Tatenda — chikwata cheBike 4 U chichaongorora chikumbiro chako chokubata paWhatsApp. Chengeta runhare rwako pedyo!",
+    supSuccessTitle: "✅ Zvagamuchirwa — tatenda!",
+    supSuccessBody: "Magwaro ako atumirwa kuchikwata cheBike 4 U. Tichakubata paWhatsApp.",
+    errRequired: "Ndapota zadza zvese zvinodiwa zvine *.",
+    errEmail: "Ndapota nyora email chaiyo.",
+    errAvail: "Ndapota pindura mubvunzo wekuwanikwa.",
+    errTcs: "Ndapota tanga waverenga uye wabvuma Mitemo neMirayiridzo.",
+    errIdDoc: "Ndapota kwidza chitupa / pasipoti / gwaro reasylum.",
+    errLicense: "Ndapota kwidza rezinesi rako rekutyaira.",
+    errBank: "Ndapota kwidza bank statement, kana sarudza kuti hauna akaunti yebhangi.",
+    errNetwork: "Dambudziko renetiweki — tarisa internet yako woedza zvakare.",
+    errSomeDocs: "Mamwe magwaro haana kukwira — baya bhatani kuti uedze zvakare. Chikumbiro chako CHAKAGAMUCHIRWA.",
+    errAttach: "Ndapota isa gwaro rimwe chete kana kunyora shoko.",
+    needMore: "tinoda rumwe ruzivo kubva kwauri",
+    needMoreDefault: "Ndapota kwidza magwaro asipo pazasi.",
+    privacy: "Ruzivo rwako runoshandiswa chete pachikumbiro chako cheBike 4 U.",
+  },
+};
+
+const LANGS=[["en","🇬🇧","English"],["fr","🇨🇩","Français"],["sw","🇹🇿","Kiswahili"],["rn","🇧🇮","Kirundi"],["ny","🇲🇼","Chichewa"],["sn","🇿🇼","Shona"]];
+let T = I18N.en;
+let SUP = null;        // {token, existing:[...]} when opened via personal link
+let CT = null;         // chosen contract type
+let STOCK = {rto:0, rental:0};
+let CAMPAIGN = "";
+
+const DOCS = [
+  {type:"id_document", key:"d_id", required:true},
+  {type:"drivers_license", key:"d_lic", required:true},
+  {type:"bank_statement", key:"d_bank", required:true},
+  {type:"work_permit", key:"d_permit", required:false},
+];
+
+function buildDocs(){
+  const docsDiv=document.getElementById("docs");
+  docsDiv.innerHTML="";
+  for (const d of DOCS) {
+    const have = SUP && (SUP.existing.includes(d.type) || (d.type==="id_document" && SUP.existing.includes("passport_asylum")));
+    docsDiv.insertAdjacentHTML("beforeend",
+      '<div class="doc" id="doc_'+d.type+'"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#E91E63">*</span>':'')+
+      (have?' <span class="have">'+T.already+'</span>':'')+
+      '<input type="file" accept="image/*,application/pdf" data-type="'+d.type+'" style="margin-top:8px">'+
+      '<div class="st" id="st_'+d.type+'"></div></div>');
+  }
+  document.getElementById("doc_bank_statement").style.display=document.getElementById("nobank").checked?"none":"block";
+}
+
+function applyLang(lang){
+  T = I18N[lang] || I18N.en;
+  try{localStorage.setItem("b4u_lang",lang);}catch(_){}
+  for(const el of document.querySelectorAll("[data-t]")) el.textContent = T[el.dataset.t] ?? el.textContent;
+  for(const el of document.querySelectorAll("[data-tp]")) el.placeholder = T[el.dataset.tp] ?? "";
+  document.getElementById("pagetitle").textContent = SUP ? T.completeTitle : T.title;
+  const go=document.getElementById("go");
+  if(!go.disabled) go.textContent = SUP ? T.send : T.submit;
+  document.getElementById("donetitle").textContent = SUP ? T.supSuccessTitle : T.successTitle;
+  document.getElementById("donemsg").textContent = SUP ? T.supSuccessBody : T.successBody;
+  const lw=document.getElementById("langs");
+  lw.innerHTML="";
+  for(const [code,flag] of LANGS){
+    const b=document.createElement("button");
+    b.type="button";b.textContent=flag;if(code===lang)b.className="on";
+    b.onclick=()=>applyLang(code);lw.appendChild(b);
+  }
+  buildDocs();
+}
+
+async function init(){
+  const t = new URLSearchParams(location.search).get("t");
+  let state;
+  try{
+    const r = await fetch(API + "?state=1&v=standing" + (t ? "&t="+encodeURIComponent(t) : ""));
+    state = await r.json();
+  }catch(_){
+    document.getElementById("loading").textContent = "Could not load — please check your connection and reopen the link.";
+    return;
+  }
+  document.getElementById("loading").style.display="none";
+  if(!state.ok && state.error === "invalid_token"){
+    const c=document.getElementById("closed");
+    c.innerHTML="<h2>This link is not valid.</h2><p>Please use the latest link Bike 4 U sent you on WhatsApp.</p>";
+    c.style.display="block";return;
+  }
+  if(!state.ok || state.open !== true){
+    document.getElementById("closed").style.display="block";return;
+  }
+  CAMPAIGN = "standing";
+  STOCK = state.stock || {rto:0, rental:0};
+  document.getElementById("bikeName").textContent = state.standing.bike;
+  document.getElementById("rtoPrice").textContent = state.standing.rto_price;
+  document.getElementById("rtoTerm").textContent = state.standing.rto_term;
+  document.getElementById("rentalPrice").textContent = state.standing.rental_price;
+  document.getElementById("rentalTerm").textContent = state.standing.rental_term;
+  for (const [id, avail] of [["ctRto", STOCK.rto > 0], ["ctRental", STOCK.rental > 0]]) {
+    const el = document.getElementById(id);
+    if (!avail) { el.classList.add("na"); document.getElementById(id === "ctRto" ? "rtoNa" : "rentalNa").style.display = "block"; }
+    else el.addEventListener("click", () => {
+      CT = el.dataset.ct;
+      document.getElementById("ctRto").classList.remove("on");
+      document.getElementById("ctRental").classList.remove("on");
+      el.classList.add("on");
+    });
+  }
+  document.getElementById("tcslink").href = API + "?tcs=1";
+  if(t && state.sup){
+    SUP = { token: t, existing: state.sup.existing || [] };
+    document.getElementById("supName").textContent = "Hi " + state.sup.firstName;
+    document.getElementById("supBanner").style.display="block";
+    document.getElementById("supNote").style.display="block";
+    document.getElementById("mainOnly").style.display="none";
+    document.getElementById("mainOnly2").style.display="none";
+  }
+  window.__supReason = state.sup ? state.sup.reason : null;
+  // Language gate first (Max: the link must open on CHOOSE YOUR LANGUAGE,
+  // flags + names, before anything else — flags stay on top afterwards).
+  const gate=document.getElementById("langGate");
+  const gb=document.getElementById("gateBtns");
+  gb.innerHTML="";
+  for(const [code,flag,name] of LANGS){
+    const b=document.createElement("button");
+    b.type="button";b.className="gatebtn";
+    b.innerHTML='<span style="font-size:26px">'+flag+'</span><b>'+name+'</b>';
+    b.onclick=()=>{
+      gate.style.display="none";
+      document.getElementById("app").style.display="block";
+      applyLang(code);
+      if(SUP){
+        const pr=document.getElementById("supReason");
+        pr.textContent = window.__supReason || T.needMoreDefault;
+      }
+      window.scrollTo({top:0});
+    };
+    gb.appendChild(b);
+  }
+  gate.style.display="block";
+}
+
+// Budget-phone friendly DOB: three dropdowns instead of the native date
+// picker (going back decades in the native picker is painful).
+(function(){
+  const d=document.querySelector('select[name=dob_d]');
+  const m=document.querySelector('select[name=dob_m]');
+  const y=document.querySelector('select[name=dob_y]');
+  if(!d) return;
+  const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  for(let i=1;i<=31;i++){const o=document.createElement("option");o.value=String(i).padStart(2,"0");o.textContent=i;d.appendChild(o);}
+  for(let i=1;i<=12;i++){const o=document.createElement("option");o.value=String(i).padStart(2,"0");o.textContent=String(i).padStart(2,"0")+" \u00b7 "+MONTHS[i-1];m.appendChild(o);}
+  const yNow=new Date().getFullYear();
+  for(let i=yNow-18;i>=yNow-75;i--){const o=document.createElement("option");o.value=String(i);o.textContent=i;y.appendChild(o);}
+})();
+init();
+
+document.getElementById("nobank").addEventListener("change", e=>{
+  const el=document.getElementById("doc_bank_statement");
+  if(el) el.style.display = e.target.checked ? "none" : "block";
+});
+for(const r of document.querySelectorAll('input[name=availability]')){
+  r.addEventListener("change", ()=>{
+    document.getElementById("altDayWrap").style.display =
+      document.getElementById("av2").checked ? "block" : "none";
+  });
+}
+
+function err(m){const e=document.getElementById("err");e.textContent=m;e.style.display="block";e.scrollIntoView({behavior:"smooth",block:"center"});}
+function clearErr(){document.getElementById("err").style.display="none";}
+
+async function shrink(file){
+  if(!file.type.startsWith("image/")||file.size<1500000) return file;
+  try{
+    const img=await createImageBitmap(file);
+    const s=Math.min(1,1600/Math.max(img.width,img.height));
+    const cv=document.createElement("canvas");cv.width=img.width*s;cv.height=img.height*s;
+    cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+    const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",0.8));
+    return blob&&blob.size<file.size?new File([blob],file.name.replace(/\.[^.]+$/,".jpg"),{type:"image/jpeg"}):file;
+  }catch(_){return file;}
+}
+
+async function uploadDoc(token,type,file){
+  const stId=type==="passport_asylum"?"id_document":type;
+  const st=document.getElementById("st_"+stId);
+  st.className="st";st.textContent=T.uploading;
+  const f=await shrink(file);
+  if(f.size>8*1024*1024){st.className="st err";st.textContent=T.tooBig;return false;}
+  for(let a=0;a<2;a++){
+    try{
+      const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name),
+        {method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f});
+      const d=await r.json();
+      if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
+      st.className="st err";st.textContent=d.error||T.upFailed;
+    }catch(_){st.className="st err";st.textContent=T.netRetry;}
+  }
+  return false;
+}
+
+const done=new Set();
+document.getElementById("f").addEventListener("submit", async (ev)=>{
+  ev.preventDefault();clearErr();
+  const F=ev.target, btn=document.getElementById("go");
+  const files={};let idType="sa_id";
+  for(const inp of document.querySelectorAll('input[type=file]')){
+    if(inp.files[0]) files[inp.dataset.type]=inp.files[0];
+  }
+  const nobank=document.getElementById("nobank").checked;
+
+  let token=SUP&&SUP.token;
+  if(!SUP&&!window.__token){
+    const v=n=>((F[n]&&F[n].value)||"").trim();
+    idType=v("idType");
+    const dobStr = v("dob_y")&&v("dob_m")&&v("dob_d") ? v("dob_y")+"-"+v("dob_m")+"-"+v("dob_d") : "";
+    if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address")
+       ||!v("deliveryCompany")||!v("earnings")||!v("duration"))
+      return err(T.errRequired);
+    if(!/^\S+@\S+\.\S+$/.test(v("email"))) return err(T.errEmail);
+    // enforce +countrycode format (Max), default +27; strip leading 0
+    let natNum=v("phone").replace(/[^0-9]/g,"").replace(/^0+/,"");
+    const fullPhone=v("phoneCC")+natNum;
+    if(natNum.length<7||natNum.length>10) return err(T.errPhone);
+    let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
+    const refFull=v("refCC")+refNat;
+    if(!v("referredBy")||refNat.length<7||refNat.length>10) return err(T.errReferral);
+    if(!CT) return err(T.errContract);
+    if(!document.getElementById("tc").checked) return err(T.errTcs);
+    if(!document.getElementById("mnt").checked) return err(T.errMaint);
+    if(!document.getElementById("drv").checked) return err(T.errDriving);
+    if(!files.id_document) return err(T.errIdDoc);
+    if(!files.drivers_license) return err(T.errLicense);
+    if(!files.bank_statement&&!nobank) return err(T.errBank);
+
+    btn.disabled=true;btn.textContent=T.submitting;
+    const payload={action:"submit",campaign:CAMPAIGN,website:v("website"),
+      firstName:v("firstName"),lastName:v("lastName"),phone:fullPhone,email:v("email"),
+      idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
+      deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
+      referredBy:v("referredBy"),referredByPhone:refFull,
+      contractType:CT,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
+    let d;
+    try{
+      const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      d=await r.json();
+    }catch(_){btn.disabled=false;btn.textContent=T.submit;return err(T.errNetwork);}
+    if(!d.ok){btn.disabled=false;btn.textContent=T.submit;return err(d.error||T.errNetwork);}
+    window.__token=d.token;
+  } else if(!SUP){
+    idType=((F.idType&&F.idType.value)||"sa_id");
+  }
+  token=token||window.__token;
+
+  if(SUP){
+    btn.disabled=true;btn.textContent=T.submitting;
+    const note=(F.note&&F.note.value||"").trim();
+    if(note&&!window.__notesent){
+      try{await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"note",t:token,note:note})});window.__notesent=true;}catch(_){}
+    }
+    if(Object.keys(files).length===0&&!note){btn.disabled=false;btn.textContent=T.send;return err(T.errAttach);}
+  }
+
+  btn.disabled=true;btn.textContent=T.uploadingBtn;
+  let allOk=true;
+  for(const [type,file] of Object.entries(files)){
+    const realType=(type==="id_document"&&idType!=="sa_id")?"passport_asylum":type;
+    if(done.has(realType)) continue;
+    const ok=await uploadDoc(token,realType,file);
+    if(ok) done.add(realType); else allOk=false;
+  }
+  if(!allOk){
+    btn.disabled=false;btn.textContent=T.retryBtn;
+    return err(T.errSomeDocs);
+  }
+  document.getElementById("f").style.display="none";
+  document.getElementById("done").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+</script>
+</body></html>
