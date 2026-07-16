@@ -560,12 +560,20 @@ function applyLang(lang){
 async function init(){
   const t = new URLSearchParams(location.search).get("t");
   let state;
+  // retry transient failures — "closed" must only ever mean genuinely closed
+  for(let attempt=1;attempt<=4;attempt++){
   try{
     const r = await fetch(API + "?state=1&v=standing" + (t ? "&t="+encodeURIComponent(t) : ""));
     state = await r.json();
+    if(!r.ok || (!state.ok && state.error === "temporary")){ throw new Error("retry"); }
+    break;
   }catch(_){
-    document.getElementById("loading").textContent = "Could not load — please check your connection and reopen the link.";
-    return;
+    if(attempt===4){
+      document.getElementById("loading").textContent = "Could not load — please check your connection and reopen the link.";
+      return;
+    }
+    await new Promise(r2=>setTimeout(r2, 1500*attempt));
+  }
   }
   document.getElementById("loading").style.display="none";
   if(!state.ok && state.error === "invalid_token"){
