@@ -8,7 +8,7 @@
   h1{font-size:22px;margin:8px 0 2px}
   .brand{color:var(--teal);font-weight:800;letter-spacing:.3px;font-size:15px}
   .top{display:flex;justify-content:space-between;align-items:center}
-  .langs button{background:none;border:1px solid var(--line);border-radius:8px;font-size:17px;padding:3px 6px;margin-left:4px;cursor:pointer}
+  .langs button{background:none;border:1px solid var(--line);border-radius:8px;font-size:17px;padding:3px 7px;margin-right:6px;cursor:pointer}
   .langs button.on{border-color:var(--teal);background:rgba(46,197,182,.12)}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
   .batch{border-color:rgba(233,30,99,.55);background:rgba(233,30,99,.07);font-weight:600;font-size:14px}
@@ -39,10 +39,11 @@
   .gatebtn{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:10px 0;font-size:17px;color:var(--txt);cursor:pointer;text-align:left}
   .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
-<div class="top">
-  <div class="brand" style="display:flex;align-items:center;gap:9px"><img src="logo.png" alt="Bike 4 U" style="height:36px;width:36px;border-radius:9px">BIKE 4 U</div>
-  <div class="langs" id="langs"></div>
+<div style="display:flex;align-items:center;gap:10px">
+  <img src="logo.png" alt="Bike 4 U" style="height:40px;width:40px;border-radius:10px">
+  <div class="brand" style="font-size:20px;background:linear-gradient(135deg,var(--pink),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent">BIKE 4 U</div>
 </div>
+<div class="langs" id="langs" style="margin-top:10px"></div>
 <div id="loading">…</div>
 <div id="closed"><h2>Applications are currently closed.</h2><p>Please check with Bike 4 U on WhatsApp.</p></div>
 <div id="langGate">
@@ -93,18 +94,21 @@
   <h3 style="margin:0 0 4px" data-t="deliveryExp"></h3>
   <label class="req" data-t="platformQ"></label>
   <select name="deliveryCompany">
+    <option value="" data-t="selectOne"></option>
     <option value="uber">Uber Eats</option><option value="mr_d">Mr D</option>
     <option value="checkers">Checkers Sixty60</option><option value="picup">Picup</option>
     <option value="dash">Dash</option><option value="other">Own / Other</option>
   </select>
   <label class="req" data-t="earningsQ"></label>
   <select name="earnings">
-    <option>Under R1000</option><option selected>R1000 - R2000</option>
+    <option value="" data-t="selectOne"></option>
+    <option>Under R1000</option><option>R1000 - R2000</option>
     <option>R2000 - R3500</option><option>Over R3500</option>
   </select>
   <label class="req" data-t="durationQ"></label>
   <select name="duration">
-    <option selected>Less than 6 months</option><option>6 months - 1 year</option>
+    <option value="" data-t="selectOne"></option>
+    <option>Less than 6 months</option><option>6 months - 1 year</option>
     <option>1 - 2 years</option><option>Over 2 years</option>
   </select>
 </div>
@@ -176,7 +180,7 @@ const I18N = {
     phone: "WhatsApp / phone number", email: "Email address",
     idType: "ID type", saId: "South African ID", passport: "Passport", asylum: "Asylum Document",
     idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
-    deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?",
+    deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?", selectOne: "Select…",
     earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
     referralTitle: "Referral (optional)",
     referralHint: "Were you referred by an existing Bike 4 U driver? We verify this against our records.",
@@ -225,7 +229,7 @@ const I18N = {
     phone: "Numéro WhatsApp / téléphone", email: "Adresse e-mail",
     idType: "Type de pièce", saId: "Carte d'identité sud-africaine", passport: "Passeport", asylum: "Document d'asile",
     idNumber: "Numéro d'identité / passeport / asile", dob: "Date de naissance", dobDay: "Jour", dobMonth: "Mois", dobYear: "Année", address: "Adresse du domicile",
-    deliveryExp: "Expérience de livraison", platformQ: "Pour quelle plateforme livrez-vous ?",
+    deliveryExp: "Expérience de livraison", platformQ: "Pour quelle plateforme livrez-vous ?", selectOne: "Choisissez…",
     earningsQ: "Revenus hebdomadaires estimés", durationQ: "Depuis combien de temps faites-vous des livraisons ?",
     referralTitle: "Parrainage (facultatif)",
     referralHint: "Avez-vous été recommandé par un chauffeur Bike 4 U ? Nous vérifions dans nos dossiers.",
@@ -274,7 +278,7 @@ const I18N = {
     phone: "Namba ya WhatsApp / simu", email: "Barua pepe",
     idType: "Aina ya kitambulisho", saId: "Kitambulisho cha Afrika Kusini", passport: "Pasipoti", asylum: "Hati ya Ukimbizi",
     idNumber: "Namba ya kitambulisho / pasipoti / ukimbizi", dob: "Tarehe ya kuzaliwa", dobDay: "Siku", dobMonth: "Mwezi", dobYear: "Mwaka", address: "Anwani ya nyumbani",
-    deliveryExp: "Uzoefu wa Usafirishaji", platformQ: "Unasafirisha kwa jukwaa gani?",
+    deliveryExp: "Uzoefu wa Usafirishaji", platformQ: "Unasafirisha kwa jukwaa gani?", selectOne: "Chagua…",
     earningsQ: "Makadirio ya mapato ya wiki", durationQ: "Umefanya kazi ya usafirishaji kwa muda gani?",
     referralTitle: "Rufaa (hiari)",
     referralHint: "Je, ulipendekezwa na dereva wa Bike 4 U? Tunathibitisha kwenye kumbukumbu zetu.",
@@ -323,7 +327,7 @@ const I18N = {
     phone: "Inomero ya WhatsApp / terefone", email: "Imeyili",
     idType: "Ubwoko bw'ikarata", saId: "Ikarata y'Afrika y'Epfo", passport: "Pasiporo", asylum: "Icangombwa c'ubuhungiro",
     idNumber: "Inomero y'ikarata / pasiporo / ubuhungiro", dob: "Itariki y'amavuko", dobDay: "Umusi", dobMonth: "Ukwezi", dobYear: "Umwaka", address: "Aho uba",
-    deliveryExp: "Uburambe mu Gutwara", platformQ: "Ukorera iyihe porogaramu?",
+    deliveryExp: "Uburambe mu Gutwara", platformQ: "Ukorera iyihe porogaramu?", selectOne: "Hitamwo…",
     earningsQ: "Amahera yinjira ku ndwi", durationQ: "Umaze igihe kingana iki mu gutwara ibintu?",
     referralTitle: "Uwakurungitse (si itegeko)",
     referralHint: "Woba warungitswe n'umushoferi wa Bike 4 U? Turabisuzuma mu bitabu vyacu.",
@@ -372,7 +376,7 @@ const I18N = {
     phone: "Nambala ya WhatsApp / foni", email: "Imelo",
     idType: "Mtundu wa chizindikiritso", saId: "ID ya South Africa", passport: "Pasipoti", asylum: "Chikalata cha Othawa",
     idNumber: "Nambala ya ID / pasipoti / othawa", dob: "Tsiku lobadwa", dobDay: "Tsiku", dobMonth: "Mwezi", dobYear: "Chaka", address: "Adilesi ya kwanu",
-    deliveryExp: "Zochitika pa Kutumiza", platformQ: "Mumagwirira ntchito nsanja iti?",
+    deliveryExp: "Zochitika pa Kutumiza", platformQ: "Mumagwirira ntchito nsanja iti?", selectOne: "Sankhani…",
     earningsQ: "Ndalama zomwe mumapeza pa sabata", durationQ: "Mwakhala mukutumiza kwa nthawi yayitali bwanji?",
     referralTitle: "Kutumizidwa (mukafuna)",
     referralHint: "Kodi munatumizidwa ndi dalaivala wa Bike 4 U? Timatsimikizira m'mabuku athu.",
@@ -421,7 +425,7 @@ const I18N = {
     phone: "Nhamba yeWhatsApp / runhare", email: "Email",
     idType: "Rudzi rwechitupa", saId: "Chitupa cheSouth Africa", passport: "Pasipoti", asylum: "Gwaro reAsylum",
     idNumber: "Nhamba yechitupa / pasipoti / asylum", dob: "Zuva rekuzvarwa", dobDay: "Zuva", dobMonth: "Mwedzi", dobYear: "Gore", address: "Kero yepamba",
-    deliveryExp: "Ruzivo rweKutakura", platformQ: "Unoshandira platform ipi?",
+    deliveryExp: "Ruzivo rweKutakura", platformQ: "Unoshandira platform ipi?", selectOne: "Sarudza…",
     earningsQ: "Mari inofungidzirwa pavhiki", durationQ: "Wave nenguva yakareba sei uchiita zvekutakura?",
     referralTitle: "Kusumwa (kana uchida)",
     referralHint: "Wakasumwa here nemutyairi weBike 4 U aripo? Tinosimbisa mumabhuku edu.",
@@ -630,7 +634,8 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     const v=n=>((F[n]&&F[n].value)||"").trim();
     idType=v("idType");
     const dobStr = v("dob_y")&&v("dob_m")&&v("dob_d") ? v("dob_y")+"-"+v("dob_m")+"-"+v("dob_d") : "";
-    if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address"))
+    if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address")
+       ||!v("deliveryCompany")||!v("earnings")||!v("duration"))
       return err(T.errRequired);
     if(!/^\S+@\S+\.\S+$/.test(v("email"))) return err(T.errEmail);
     const av=F.querySelector('input[name=availability]:checked');
