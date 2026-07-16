@@ -129,7 +129,7 @@
   </select>
 </div>
 
-<div class="card">
+<div class="card" id="refCard">
   <h3 style="margin:0 0 4px" data-t="referralTitle"></h3>
   <p style="color:var(--mut);font-size:13px;margin:2px 0 0" data-t="referralHint"></p>
   <label class="req" data-t="refName"></label><input name="referredBy">
@@ -590,6 +590,10 @@ async function init(){
     document.getElementById("supName").textContent = "Hi " + state.sup.firstName;
     document.getElementById("supBanner").style.display="block";
     document.getElementById("supNote").style.display="block";
+    // Info requests often ask for a corrected referral — move the referral
+    // card into the supplement view (optional here; validated only if filled).
+    const rc=document.getElementById("refCard"), sn=document.getElementById("supNote");
+    sn.parentNode.insertBefore(rc,sn);
     document.getElementById("mainOnly").style.display="none";
     document.getElementById("mainOnly2").style.display="none";
   }
@@ -735,11 +739,19 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
   if(SUP){
     btn.disabled=true;btn.textContent=T.submitting;
     const note=(F.note&&F.note.value||"").trim();
+    const refN=v("referredBy");
+    let refNat2=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
+    if((refN||refNat2)&&!window.__refsent){
+      if(!refN||refNat2.length<7||refNat2.length>10){btn.disabled=false;btn.textContent=T.send;return err(T.errReferral);}
+      try{const rr=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"referral",t:token,referredBy:refN,referredByPhone:v("refCC")+refNat2})});
+        if((await rr.json()).ok)window.__refsent=true;}catch(_){}
+    }
     if(note&&!window.__notesent){
       try{await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({action:"note",t:token,note:note})});window.__notesent=true;}catch(_){}
     }
-    if(Object.keys(files).length===0&&!note){btn.disabled=false;btn.textContent=T.send;return err(T.errAttach);}
+    if(Object.keys(files).length===0&&!note&&!window.__refsent){btn.disabled=false;btn.textContent=T.send;return err(T.errAttach);}
   }
 
   btn.disabled=true;btn.textContent=T.uploadingBtn;
