@@ -747,10 +747,14 @@ async function uploadDoc(token,type,file){
   st.className="st";st.textContent=T.uploading;
   const f=await shrink(file);
   if(f.size>8*1024*1024){st.className="st err";st.textContent=T.tooBig;return false;}
-  for(let a=0;a<2;a++){
+  for(let a=0;a<3;a++){
     try{
+      // slow mobile data stalls forever without a deadline — "pending" bug:
+      // abort after 90s so the retry flow takes over instead of hanging
+      const ctl=new AbortController();
+      const kill=setTimeout(()=>ctl.abort(),90000);
       const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name),
-        {method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f});
+        {method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
       const d=await r.json();
       if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
       st.className="st err";st.textContent=d.error||T.upFailed;
