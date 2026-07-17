@@ -763,6 +763,7 @@ const done=new Set();
 document.getElementById("f").addEventListener("submit", async (ev)=>{
   ev.preventDefault();clearErr();
   const F=ev.target, btn=document.getElementById("go");
+  const v=n=>((F[n]&&F[n].value)||"").trim(); // handler-scope: SUP branch needs it too
   const files={};let idType="sa_id";
   for(const inp of document.querySelectorAll('input[type=file]')){
     if(inp.files[0]) files[inp.dataset.type]=inp.files[0];
@@ -771,7 +772,6 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
 
   let token=SUP&&SUP.token;
   if(!SUP&&!window.__token){
-    const v=n=>((F[n]&&F[n].value)||"").trim();
     idType=v("idType");
     const dobStr = v("dob_y")&&v("dob_m")&&v("dob_d") ? v("dob_y")+"-"+v("dob_m")+"-"+v("dob_d") : "";
     if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address")
