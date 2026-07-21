@@ -64,6 +64,12 @@
   <h2 style="color:#f59e0b;margin:0 0 6px;font-size:17px"><span id="supName"></span> — <span data-t="needMore"></span></h2>
   <p style="margin:0;white-space:pre-line" id="supReason"></p>
 </div>
+
+<div class="card" id="cancelCard" style="display:none">
+  <p id="cancelledBanner" style="display:none;margin:0 0 10px;color:#f59e0b;font-weight:700" data-t="cancelledMsg"></p>
+  <button type="button" id="cancelBtn" data-t="cancelBtn" style="width:100%;border:1px solid rgba(239,68,68,.45);border-radius:11px;padding:12px;font-size:14px;font-weight:700;color:#ef4444;background:rgba(239,68,68,.06);cursor:pointer"></button>
+  <button type="button" id="reapplyBtn" data-t="reapplyBtn" style="display:none;width:100%;border:0;border-radius:11px;padding:12px;font-size:14px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--pink),var(--teal));cursor:pointer"></button>
+</div>
 <div class="card">
   <h3 style="margin:0 0 8px" data-t="chooseBike"></h3>
   <div id="modelCards"></div>
@@ -220,6 +226,7 @@
 
 <script>
 const API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/apply-web";
+const CANCEL_API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/cancel-application";
 const I18N = {
   en: {
     title: "Apply for Your Bike", completeTitle: "Complete Your Application",
@@ -268,6 +275,7 @@ const I18N = {
     errAttach: "Please attach at least one document or write a message.",
     needMore: "we need a little more from you",
     needMoreDefault: "Please upload the outstanding documents below.",
+    cancelBtn: "Cancel my application", cancelConfirm: "Are you sure you want to cancel your application? You can reapply anytime using this same link.", cancelledMsg: "Your application has been cancelled. You can reapply anytime using this same link.", reapplyBtn: "Reapply", cancelFailed: "Something went wrong — please try again or contact us on WhatsApp.",
     privacy: "Your information is only used for your Bike 4 U application.",
   },
   fr: {
@@ -317,6 +325,7 @@ const I18N = {
     errAttach: "Veuillez joindre au moins un document ou écrire un message.",
     needMore: "nous avons besoin d'un complément",
     needMoreDefault: "Veuillez téléverser les documents manquants ci-dessous.",
+    cancelBtn: "Annuler ma candidature", cancelConfirm: "Voulez-vous vraiment annuler votre candidature ? Vous pouvez la réactiver à tout moment avec ce même lien.", cancelledMsg: "Votre candidature a été annulée. Vous pouvez la réactiver à tout moment avec ce même lien.", reapplyBtn: "Réactiver ma candidature", cancelFailed: "Une erreur est survenue — veuillez réessayer ou nous contacter sur WhatsApp.",
     privacy: "Vos informations ne sont utilisées que pour votre candidature Bike 4 U.",
   },
   sw: {
@@ -366,6 +375,7 @@ const I18N = {
     errAttach: "Tafadhali ambatisha angalau nyaraka moja au andika ujumbe.",
     needMore: "tunahitaji taarifa zaidi kutoka kwako",
     needMoreDefault: "Tafadhali pakia nyaraka zinazokosekana hapa chini.",
+    cancelBtn: "Ghairi maombi yangu", cancelConfirm: "Una uhakika unataka kughairi maombi yako? Unaweza kuomba tena wakati wowote kwa kutumia kiungo hiki hiki.", cancelledMsg: "Maombi yako yamegairiwa. Unaweza kuomba tena wakati wowote kwa kutumia kiungo hiki hiki.", reapplyBtn: "Omba tena", cancelFailed: "Hitilafu imetokea — tafadhali jaribu tena au wasiliana nasi kwa WhatsApp.",
     privacy: "Taarifa zako zinatumika tu kwa maombi yako ya Bike 4 U.",
   },
   rn: {
@@ -415,6 +425,7 @@ const I18N = {
     errAttach: "Shiramwo n'imiburiburi icangombwa kimwe canke wandike ubutumwa.",
     needMore: "dukeneye ayandi makuru kuri wewe",
     needMoreDefault: "Pakira ivyangombwa bibura aho munsi.",
+    cancelBtn: "Kureka isaba ryanje", cancelConfirm: "Uremeza ko ushaka guhagarika isaba ryawe? Ushobora kongera gusaba igihe cose ukoresheje iyi link nyene.", cancelledMsg: "Isaba ryawe ryahagaritswe. Ushobora kongera gusaba igihe cose ukoresheje iyi link nyene.", reapplyBtn: "Ongera usabe", cancelFailed: "Habaye ikibazo — mwongere mugerageze canke mudukorane kuri WhatsApp.",
     privacy: "Amakuru yawe akoreshwa gusa ku busabe bwawe bwa Bike 4 U.",
   },
   ny: {
@@ -464,6 +475,7 @@ const I18N = {
     errAttach: "Chonde ikani chikalata chimodzi kapena lembani uthenga.",
     needMore: "tikufuna zambiri kuchokera kwa inu",
     needMoreDefault: "Chonde kwezani zikalata zosowa pansipa.",
+    cancelBtn: "Chotsani pempho langa", cancelConfirm: "Kodi mukutsimikiza kuti mukufuna kuletsa pempho lanu? Mukhoza kupemphanso nthawi iliyonse pogwiritsa ntchito ulalo womwewu.", cancelledMsg: "Pempho lanu laletsedwa. Mukhoza kupemphanso nthawi iliyonse pogwiritsa ntchito ulalo womwewu.", reapplyBtn: "Pemphaninso", cancelFailed: "Pali vuto — chonde yesaninso kapena tilumikizeni pa WhatsApp.",
     privacy: "Zambiri zanu zimagwiritsidwa ntchito pa pempho lanu la Bike 4 U lokha.",
   },
   sn: {
@@ -513,6 +525,7 @@ const I18N = {
     errAttach: "Ndapota isa gwaro rimwe chete kana kunyora shoko.",
     needMore: "tinoda rumwe ruzivo kubva kwauri",
     needMoreDefault: "Ndapota kwidza magwaro asipo pazasi.",
+    cancelBtn: "Dzima chikumbiro changu", cancelConfirm: "Uri sure here kuti unoda kudzima chikumbiro chako? Unogona kukumbirazve chero nguva uchishandisa link iyi.", cancelledMsg: "Chikumbiro chako chadzimwa. Unogona kukumbirazve chero nguva uchishandisa link iyi.", reapplyBtn: "Kumbirazve", cancelFailed: "Pane chakanganisika — edza zvakare kana kutibata paWhatsApp.",
     privacy: "Ruzivo rwako runoshandiswa chete pachikumbiro chako cheBike 4 U.",
   },
 };
@@ -674,6 +687,50 @@ async function init(){
     sn.parentNode.insertBefore(rc,sn);
     document.getElementById("mainOnly").style.display="none";
     document.getElementById("mainOnly2").style.display="none";
+  }
+  // Cancel/reapply — the driver can always get back to this same link to
+  // cancel or reactivate their application, at any stage, on their own
+  // (Max, 2026-07-21). Only offered while still on the waitlist — once
+  // approved/active there's nothing to cancel here.
+  if (t && state.sup && state.sup.status === "waitlist") {
+    const cancelCard = document.getElementById("cancelCard");
+    const cancelledBanner = document.getElementById("cancelledBanner");
+    const cancelBtnEl = document.getElementById("cancelBtn");
+    const reapplyBtnEl = document.getElementById("reapplyBtn");
+    let isCancelled = !!state.sup.cancelled;
+    function renderCancelState(){
+      cancelledBanner.style.display = isCancelled ? "block" : "none";
+      cancelBtnEl.style.display = isCancelled ? "none" : "block";
+      reapplyBtnEl.style.display = isCancelled ? "block" : "none";
+    }
+    async function doCancelAction(action, btn){
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = "…";
+      try {
+        const r = await fetch(CANCEL_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clientId: state.sup.clientId, action, applicationAccessToken: t }),
+        });
+        const d = await r.json();
+        if (!r.ok || d.error) throw new Error(d.error || "failed");
+        isCancelled = action === "cancel";
+        renderCancelState();
+      } catch(_) {
+        alert(T.cancelFailed);
+        btn.textContent = original;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    cancelBtnEl.addEventListener("click", () => {
+      if (!confirm(T.cancelConfirm)) return;
+      doCancelAction("cancel", cancelBtnEl);
+    });
+    reapplyBtnEl.addEventListener("click", () => doCancelAction("reapply", reapplyBtnEl));
+    renderCancelState();
+    cancelCard.style.display = "block";
   }
   window.__supReason = state.sup ? state.sup.reason : null;
   // Language gate first (Max: the link must open on CHOOSE YOUR LANGUAGE,
