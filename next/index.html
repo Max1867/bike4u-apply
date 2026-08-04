@@ -225,7 +225,16 @@
 </div>
 
 <script>
-const API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/apply-web";
+const API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/apply-web"
+  // Every network call gets a hard deadline — without one, a stalled mobile
+  // connection leaves the button on "Submitting..." forever (driver report,
+  // 2026-08-06). Uploads already had their own 90s abort.
+  async function fWT(url, opts = {}, ms = 60000){
+    const c = new AbortController();
+    const k = setTimeout(() => c.abort(), ms);
+    try { return await fetch(url, { ...opts, signal: c.signal }); }
+    finally { clearTimeout(k); }
+  };
 const CANCEL_API = "https://jpzhifjccuxcetdodeue.supabase.co/functions/v1/cancel-application";
 const I18N = {
   en: {
@@ -592,7 +601,7 @@ async function init(){
   // retry transient failures — "closed" must only ever mean genuinely closed
   for(let attempt=1;attempt<=4;attempt++){
   try{
-    const r = await fetch(API + "?state=1&v=standing" + (t ? "&t="+encodeURIComponent(t) : ""));
+    const r = await fWT(API + "?state=1&v=standing" + (t ? "&t="+encodeURIComponent(t) : ""), {}, 20000);
     state = await r.json();
     if(!r.ok || (!state.ok && state.error === "temporary")){ throw new Error("retry"); }
     break;
@@ -864,7 +873,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       contractType:CT,model:MODEL?MODEL.name:null,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
-      const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},60000);
       d=await r.json();
     }catch(_){btn.disabled=false;btn.textContent=T.submit;return err(T.errNetwork);}
     if(!d.ok){btn.disabled=false;btn.textContent=T.submit;return err(d.error==="wa_unreachable"?T.errWaPhone:(d.error||T.errNetwork));}
@@ -881,12 +890,12 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     let refNat2=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     if((refN||refNat2)&&!window.__refsent){
       if(!refN||refNat2.length<7||refNat2.length>10){btn.disabled=false;btn.textContent=T.send;return err(T.errReferral);}
-      try{const rr=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+      try{const rr=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({action:"referral",t:token,referredBy:refN,referredByPhone:v("refCC")+refNat2})});
         if((await rr.json()).ok)window.__refsent=true;}catch(_){}
     }
     if(note&&!window.__notesent){
-      try{await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},
+      try{await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({action:"note",t:token,note:note})});window.__notesent=true;}catch(_){}
     }
     if(Object.keys(files).length===0&&!note&&!window.__refsent){btn.disabled=false;btn.textContent=T.send;return err(T.errAttach);}
