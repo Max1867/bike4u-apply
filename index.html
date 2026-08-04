@@ -579,7 +579,7 @@ function applyLang(lang){
     const wrap = document.getElementById("modelCards");
     for (let i=0;i<wrap.children.length;i++){
       const priceLine = wrap.children[i].querySelector(".ctp");
-      if (priceLine) priceLine.textContent = (T.availN||"{n} available").replace("{n}", MODELS[i].total);
+      if (priceLine && MODELS[i]) priceLine.textContent = (T.availN||"{n} available").replace("{n}", MODELS[i].total); // MODELS[i] guard: the "Wait for new bike" card is an extra child with no model (Max, 2026-08-06 — undefined.total threw and killed buildDocs, emptying the docs area)
     }
   }
   const lw=document.getElementById("langs");
