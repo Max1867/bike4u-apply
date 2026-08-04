@@ -176,7 +176,7 @@
 
 </div>
 
-<div class="card">
+<div class="card" id="docsCard">
   <h3 style="margin:0 0 4px" data-t="docsTitle"></h3>
   <p style="color:var(--mut);font-size:13px;margin:2px 0 8px" data-t="docsHint"></p>
   <p style="color:#f59e0b;font-size:12.5px;font-weight:700;margin:0 0 10px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)" data-t="docsForeignNote"></p>
@@ -558,6 +558,7 @@ function buildDocs(){
   const docsDiv=document.getElementById("docs");
   docsDiv.innerHTML="";
   for (const d of DOCS) {
+    if (SUP && SUP.sections && !SUP.sections.includes(d.type)) continue;
     const have = SUP && (SUP.existing.includes(d.type) || (d.type==="id_document" && SUP.existing.includes("passport_asylum")));
     docsDiv.insertAdjacentHTML("beforeend",
       '<div class="doc" id="doc_'+d.type+'"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#E91E63">*</span>':'')+
@@ -699,14 +700,17 @@ async function init(){
   }
   document.getElementById("tcslink").href = API + "?tcs=1";
   if(t && state.sup){
-    SUP = { token: t, existing: state.sup.existing || [] };
+    SUP = { token: t, existing: state.sup.existing || [], sections: state.sup.sections || null };
     document.getElementById("supName").textContent = "Hi " + state.sup.firstName;
     document.getElementById("supBanner").style.display="block";
     document.getElementById("supNote").style.display="block";
-    // Info requests often ask for a corrected referral — move the referral
-    // card into the supplement view (optional here; validated only if filled).
     const rc=document.getElementById("refCard"), sn=document.getElementById("supNote");
-    sn.parentNode.insertBefore(rc,sn);
+    const wantReferral = !SUP.sections || SUP.sections.includes("referral");
+    if (wantReferral) { sn.parentNode.insertBefore(rc,sn); } else { rc.style.display="none"; }
+    const docSecs = ["id_document","drivers_license","bank_statement","work_permit","delivery_company_proof"];
+    const wantDocs = !SUP.sections || SUP.sections.some(x => docSecs.includes(x));
+    const docsWrap = document.getElementById("docsCard") || document.getElementById("docs");
+    if (!wantDocs && docsWrap) docsWrap.style.display="none";
     document.getElementById("mainOnly").style.display="none";
     document.getElementById("mainOnly2").style.display="none";
   }
