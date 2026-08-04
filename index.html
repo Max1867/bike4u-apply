@@ -637,14 +637,23 @@ async function init(){
   function aggRental(){ return MODELS.reduce((t,m)=>t+m.rental,0); }
   function applyModelToContracts(){
     // no model chosen = fine (Max assigns the unit) — contracts then use
-    // total stock across all models
-    for (const [id, count, naId] of [["ctRto", WAITNEW?1:(MODEL?MODEL.rto:aggRto()), "rtoNa"], ["ctRental", WAITNEW?1:(MODEL?MODEL.rental:aggRental()), "rentalNa"]]) {
+    // total stock across all models. Waiting for the next batch can only ever be
+    // RTO — rental doesn't apply to a bike that isn't in the country yet
+    // (Max, 2026-08-04: "if its waiting for a new bike it can only be RTO never rental").
+    for (const [id, count, naId] of [["ctRto", WAITNEW?1:(MODEL?MODEL.rto:aggRto()), "rtoNa"], ["ctRental", WAITNEW?0:(MODEL?MODEL.rental:aggRental()), "rentalNa"]]) {
       const el = document.getElementById(id);
       el.classList.remove("on");
       if (count === 0) { el.classList.add("na"); document.getElementById(naId).style.display = "block"; }
       else { el.classList.remove("na"); document.getElementById(naId).style.display = "none"; }
     }
-    CT = null;
+    if (WAITNEW) {
+      CT = "rent_to_own";
+      document.getElementById("ctRto").classList.add("on");
+      document.getElementById("tcsOnly").style.display = "block";
+      document.getElementById("rentalOnly").style.display = "none";
+    } else {
+      CT = null;
+    }
     document.getElementById("stockNote").style.display = "none";
   }
   function renderModels(){
