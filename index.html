@@ -618,6 +618,7 @@ async function init(){
   }
   CAMPAIGN = "standing";
   MODELS = (state.stock && state.stock.models) || [];
+  let WAITNEW = false;
   document.getElementById("rtoPrice").textContent = state.standing.rto_price;
   document.getElementById("rtoTerm").textContent = state.standing.rto_term;
   document.getElementById("rentalPrice").textContent = state.standing.rental_price;
@@ -637,7 +638,7 @@ async function init(){
   function applyModelToContracts(){
     // no model chosen = fine (Max assigns the unit) — contracts then use
     // total stock across all models
-    for (const [id, count, naId] of [["ctRto", MODEL?MODEL.rto:aggRto(), "rtoNa"], ["ctRental", MODEL?MODEL.rental:aggRental(), "rentalNa"]]) {
+    for (const [id, count, naId] of [["ctRto", WAITNEW?1:(MODEL?MODEL.rto:aggRto()), "rtoNa"], ["ctRental", WAITNEW?1:(MODEL?MODEL.rental:aggRental()), "rentalNa"]]) {
       const el = document.getElementById(id);
       el.classList.remove("on");
       if (count === 0) { el.classList.add("na"); document.getElementById(naId).style.display = "block"; }
@@ -654,8 +655,20 @@ async function init(){
       div.className = "ctopt" + (MODEL && MODEL.name === m.name ? " on" : "");
       div.innerHTML = "<b>"+m.name+"</b><div class=\"ctp\">"+(T.availN||"{n} available").replace("{n}", m.total)+"</div>"+
         "<div class=\"ctt\">"+kmSummary(m.kms)+"</div>";
-      div.addEventListener("click", () => { MODEL = m; renderModels(); applyModelToContracts(); });
+      div.addEventListener("click", () => { MODEL = m; WAITNEW = false; renderModels(); applyModelToContracts(); });
       wrap.appendChild(div);
+    }
+    // No brand-new (0 km) bikes in stock: offer to WAIT for the next
+    // supplier batch (Max, 2026-08-06). Selecting it applies like a model
+    // choice; the application lands under "Awaiting next batch" for Max.
+    const freshCount = MODELS.reduce((t,m)=>t+m.kms.filter(k=>k<1000).length,0);
+    if (freshCount === 0) {
+      const w = document.createElement("div");
+      w.className = "ctopt" + (WAITNEW ? " on" : "");
+      w.innerHTML = "<b>🆕 Wait for new bike</b><div class=\"ctp\">Brand-new bikes are on order from our supplier.</div>"+
+        "<div class=\"ctt\">Apply now and be first in line when the next batch arrives.</div>";
+      w.addEventListener("click", () => { WAITNEW = true; MODEL = null; renderModels(); applyModelToContracts(); });
+      wrap.appendChild(w);
     }
   }
   renderModels();
@@ -821,7 +834,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refFull,
-      contractType:CT,model:MODEL?MODEL.name:null,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
+      contractType:CT,model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
       const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},60000);
