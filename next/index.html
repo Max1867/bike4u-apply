@@ -545,6 +545,7 @@ let SUP = null;        // {token, existing:[...]} when opened via personal link
 let CT = null;         // chosen contract type
 let MODEL = null;      // chosen bike model (StockModel)
 let MODELS = [];
+let WAITNEW = false;   // global so the submit handler can read it (was function-local -> ReferenceError on submit)
 let CAMPAIGN = "";
 
 const DOCS = [
@@ -625,7 +626,7 @@ async function init(){
   }
   CAMPAIGN = "standing";
   MODELS = (state.stock && state.stock.models) || [];
-  let WAITNEW = false;
+  WAITNEW = false;
   document.getElementById("rtoPrice").textContent = state.standing.rto_price;
   document.getElementById("rtoTerm").textContent = state.standing.rto_term;
   document.getElementById("rentalPrice").textContent = state.standing.rental_price;
