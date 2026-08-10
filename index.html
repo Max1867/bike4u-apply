@@ -861,7 +861,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       contractType:CT,model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en"};
     let d;
     try{
-      const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},60000);
+      const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},30000);
       d=await r.json();
     }catch(_){btn.disabled=false;btn.textContent=T.submit;return err(T.errNetwork);}
     if(!d.ok){btn.disabled=false;btn.textContent=T.submit;return err(d.error==="wa_unreachable"?T.errWaPhone:(d.error||T.errNetwork));}
