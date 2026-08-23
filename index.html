@@ -692,6 +692,7 @@ async function init(){
     el.addEventListener("click", () => {
       if (el.classList.contains("na")) return;
       CT = el.dataset.ct;
+      document.getElementById("tcslink").href = API + "?tcs=1" + (CT === "rent_to_own" ? "&ct=rto" : "");
       document.getElementById("ctRto").classList.remove("on");
       document.getElementById("ctRental").classList.remove("on");
       el.classList.add("on");
