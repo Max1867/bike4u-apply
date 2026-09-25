@@ -1,22 +1,23 @@
 <!doctype html><html lang="en"><head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bike 4 U — Application</title>
 <style>
-  :root{--teal:#D7E022;--pink:#1E7292;--bg:#141721;--card:#1A1D2B;--line:#2a2f42;--txt:#eef1f7;--mut:#9aa3b5}
+  :root{--teal:#54C08A;--pink:#54C08A;--bg:#0A0B0C;--card:#131415;--line:#272829;--txt:#F2F3F4;--mut:#8A8F94}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px;max-width:560px;margin-inline:auto}
-  h1{font-size:22px;margin:8px 0 2px}
+  body{margin:0;background:var(--bg);color:var(--txt);font:13px/1.5 'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px;max-width:560px;margin-inline:auto}
+  h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;letter-spacing:-.2px;margin:8px 0 2px}
   .brand{color:var(--teal);font-weight:800;letter-spacing:.3px;font-size:15px}
   .top{display:flex;justify-content:space-between;align-items:center}
   .langs button{background:none;border:1px solid var(--line);border-radius:8px;font-size:17px;padding:3px 7px;margin-right:6px;cursor:pointer}
-  .langs button.on{border-color:var(--teal);background:rgba(46,197,182,.12)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
-  .batch{border-color:rgba(233,30,99,.55);background:rgba(233,30,99,.07);font-weight:600;font-size:14px}
+  .langs button.on{border-color:var(--teal);background:rgba(84,192,138,.12)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px;margin:14px 0}
+  .batch{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.07);font-weight:600;font-size:14px}
   .deal b{color:var(--teal)}
   .deal .row{display:flex;gap:8px;margin:6px 0;align-items:baseline}
   .deal .row span:first-child{color:var(--mut);min-width:96px;font-size:13px;flex:none}
   label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
-  input,select,textarea{width:100%;background:#10131c;border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:11px 12px;font-size:15px}
+  input,select,textarea{width:100%;background:#131415;border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:11px 12px;font-size:15px}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
   .req::after{content:" *";color:var(--pink)}
   .check{display:flex;gap:10px;align-items:flex-start;margin:10px 0}
@@ -26,34 +27,34 @@
   .btn[disabled]{opacity:.5}
   .doc{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:8px 0}
   .doc .st{font-size:12px;color:var(--mut);margin-top:6px}
-  .doc .st.ok{color:#34d399}.doc .st.err{color:#f87171}
-  .have{color:#34d399;font-size:12px;font-weight:700}
+  .doc .st.ok{color:#54C08A}.doc .st.err{color:#8A8F94}
+  .have{color:#54C08A;font-size:12px;font-weight:700}
   a{color:var(--teal)}
-  .err{color:#f87171;font-size:13px;margin-top:8px;display:none}
+  .err{color:#8A8F94;font-size:13px;margin-top:8px;display:none}
   .success{text-align:center;padding:34px 10px;display:none}
   .success h2{color:var(--teal)}
-  .tcbox{background:#10131c;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px}
+  .tcbox{background:#131415;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px}
   #loading{text-align:center;color:var(--mut);padding:60px 0}
   #closed{text-align:center;padding:80px 0;display:none}
   .ctopt{border:2px solid var(--line);border-radius:12px;padding:13px 14px;margin:9px 0;cursor:pointer}
-  .ctopt.on{border-color:var(--teal);background:rgba(46,197,182,.08)}
+  .ctopt.on{border-color:var(--teal);background:rgba(84,192,138,.08)}
   .ctopt.na{opacity:.55;cursor:not-allowed}
   .ctopt .ctp{color:var(--teal);font-weight:800;margin-top:2px}
   .ctopt .ctt{color:var(--mut);font-size:12.5px;margin-top:2px}
-  .ctopt .ctna{color:#f59e0b;font-size:12px;font-weight:700;margin-top:6px}
+  .ctopt .ctna{color:#8A8F94;font-size:12px;font-weight:700;margin-top:6px}
   #langGate{display:none;text-align:center;padding:26px 0}
   .gatebtn{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:10px 0;font-size:17px;color:var(--txt);cursor:pointer;text-align:left}
   .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
 <div style="display:flex;align-items:center;gap:10px">
   <img src="logo.png" alt="Bike 4 U" style="height:40px;width:40px;border-radius:10px">
-  <div class="brand" style="font-size:20px;background:linear-gradient(135deg,var(--pink),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent">BIKE 4 U</div>
+  <div class="brand" style="font-size:19px;background:linear-gradient(135deg,var(--pink),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent">BIKE 4 U</div>
 </div>
 <div class="langs" id="langs" style="margin-top:10px"></div>
 <div id="loading">…</div>
 <div id="closed"><h2>Applications are currently closed.</h2><p>Please check with Bike 4 U on WhatsApp.</p></div>
 <div id="langGate">
-  <h1 style="font-size:21px;letter-spacing:.5px">CHOOSE YOUR LANGUAGE</h1>
+  <h1 style="font-size:19px;letter-spacing:.5px">CHOOSE YOUR LANGUAGE</h1>
   <p style="color:var(--mut);font-size:13px;margin:6px 0 18px">Choisissez votre langue · Chagua lugha yako · Hitamwo ururimi · Sankhani chilankhulo · Sarudza mutauro</p>
   <div id="gateBtns"></div>
 </div>
@@ -61,7 +62,7 @@
 <h1 id="pagetitle"></h1>
 <p style="color:var(--mut);margin:4px 0 0;font-size:13px" data-t="official"></p>
 <div class="card" id="supBanner" style="display:none;border-color:rgba(245,158,11,.55)">
-  <h2 style="color:#f59e0b;margin:0 0 6px;font-size:17px"><span id="supName"></span> — <span data-t="needMore"></span></h2>
+  <h2 style="color:#8A8F94;margin:0 0 6px;font-size:17px"><span id="supName"></span> — <span data-t="needMore"></span></h2>
   <p style="margin:0;white-space:pre-line" id="supReason"></p>
 </div>
 <div class="card">
@@ -79,7 +80,7 @@
     <b data-t="rentalTitle"></b><div class="ctp" id="rentalPrice"></div><div class="ctt" id="rentalTerm"></div>
     <div class="ctna" id="rentalNa" style="display:none" data-t="noRentalStock"></div>
   </div>
-  <div id="stockNote" style="display:none;color:#f59e0b;font-size:12.5px;font-weight:700;margin-top:8px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)"></div>
+  <div id="stockNote" style="display:none;color:#8A8F94;font-size:12.5px;font-weight:700;margin-top:8px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)"></div>
 </div>
 
 <form id="f" novalidate>
@@ -173,7 +174,7 @@
 <div class="card" id="docsCard">
   <h3 style="margin:0 0 4px" data-t="docsTitle"></h3>
   <p style="color:var(--mut);font-size:13px;margin:2px 0 8px" data-t="docsHint"></p>
-  <p style="color:#f59e0b;font-size:12.5px;font-weight:700;margin:0 0 10px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)" data-t="docsForeignNote"></p>
+  <p style="color:#8A8F94;font-size:12.5px;font-weight:700;margin:0 0 10px;border:1px solid rgba(245,158,11,.45);border-radius:8px;padding:8px 10px;background:rgba(245,158,11,.07)" data-t="docsForeignNote"></p>
   <div id="docs"></div>
   <div class="check"><input type="checkbox" id="nobank"><label for="nobank" style="margin:0;color:var(--txt)" data-t="noBank"></label></div>
 </div>
@@ -558,7 +559,7 @@ function buildDocs(){
     if (SUP && SUP.sections && !SUP.sections.includes(d.type)) continue;
     const have = SUP && (SUP.existing.includes(d.type) || (d.type==="id_document" && SUP.existing.includes("passport_asylum")));
     docsDiv.insertAdjacentHTML("beforeend",
-      '<div class="doc" id="doc_'+d.type+'"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#1E7292">*</span>':'')+
+      '<div class="doc" id="doc_'+d.type+'"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#54C08A">*</span>':'')+
       (have?' <span class="have">'+T.already+'</span>':'')+
       '<input type="file" accept="image/*,application/pdf" data-type="'+d.type+'" style="margin-top:8px">'+
       '<div class="st" id="st_'+d.type+'"></div></div>');
@@ -739,7 +740,7 @@ async function init(){
   for(const [code,flag,name] of LANGS){
     const b=document.createElement("button");
     b.type="button";b.className="gatebtn";
-    b.innerHTML='<span style="font-size:26px">'+flag+'</span><b>'+name+'</b>';
+    b.innerHTML='<span style="font-size:19px">'+flag+'</span><b>'+name+'</b>';
     b.onclick=()=>{
       gate.style.display="none";
       document.getElementById("app").style.display="block";
