@@ -44,6 +44,15 @@
   .ctopt .ctna{color:#8A8F94;font-size:12px;font-weight:700;margin-top:6px}
   #langGate{display:none;text-align:center;padding:26px 0}
   .gatebtn{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:10px 0;font-size:17px;color:var(--txt);cursor:pointer;text-align:left}
+  /* PC view (Max, 2026-09-26): stop hugging the middle of the screen —
+     the page widens and the detail cards flow in two columns. Phones keep
+     the single column exactly as before. */
+  @media(min-width:960px){
+    body{max-width:1120px;padding:16px 32px}
+    #mainOnly{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+    #mainOnly>.card{margin:0}
+    #mainOnly>#docsCard,#mainOnly>#supNote{grid-column:1/-1}
+  }
   .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
 <img class="brand" src="logo.svg" alt="Bike 4 U — Own Your Ride" style="height:44px;width:auto;display:block">
