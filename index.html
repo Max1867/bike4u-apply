@@ -50,9 +50,13 @@
   html{background:#0A0B0C}
   @media(min-width:960px){
     body{max-width:1120px;padding:16px 32px}
-    /* two packed columns — cards fill downward with no row-alignment gaps */
-    #mainOnly{columns:2;column-gap:14px}
-    #mainOnly>.card{break-inside:avoid;margin:0 0 14px}
+    /* pinned two-column grid: tall details card left; work, referrer and
+       supplement stack right; documents span full width. No balancing gaps. */
+    #mainOnly,#mainOnly2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+    #mainOnly>.card,#mainOnly2>.card{margin:0}
+    #mainOnly>.card:first-of-type{grid-column:1;grid-row:1/span 4}
+    #refCard,#supNote{grid-column:2}
+    #docsCard{grid-column:1/-1}
   }
   .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
