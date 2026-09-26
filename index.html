@@ -47,11 +47,12 @@
   /* PC view (Max, 2026-09-26): stop hugging the middle of the screen —
      the page widens and the detail cards flow in two columns. Phones keep
      the single column exactly as before. */
+  html{background:#0A0B0C}
   @media(min-width:960px){
     body{max-width:1120px;padding:16px 32px}
-    #mainOnly{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
-    #mainOnly>.card{margin:0}
-    #mainOnly>#docsCard,#mainOnly>#supNote{grid-column:1/-1}
+    /* two packed columns — cards fill downward with no row-alignment gaps */
+    #mainOnly{columns:2;column-gap:14px}
+    #mainOnly>.card{break-inside:avoid;margin:0 0 14px}
   }
   .gatebtn:active{border-color:var(--teal)}
 </style></head><body>
