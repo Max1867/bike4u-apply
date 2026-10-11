@@ -296,6 +296,8 @@ const I18N = {
     errLicense: "Please upload your driver's license.", errPermit: "Please upload your asylum permit / work permit.",
     errBank: "Please upload a bank statement, or tick that you don't have a bank account.",
     errNetwork: "Network problem — please check your connection and try again.",
+    upProgress: "Uploading document {n} of {m}…",
+    errSlow: "This is taking long on your connection — please tap the button again. Nothing you entered is lost.",
     errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
     errAttach: "Please attach at least one document or write a message.",
     needMore: "we need a little more from you",
@@ -346,6 +348,8 @@ const I18N = {
     errLicense: "Veuillez téléverser votre permis de conduire.", errPermit: "Veuillez téléverser votre permis d'asile / permis de travail.",
     errBank: "Veuillez téléverser un relevé bancaire, ou cochez que vous n'avez pas de compte bancaire.",
     errNetwork: "Problème de réseau — vérifiez votre connexion et réessayez.",
+    upProgress: "Envoi du document {n} sur {m}…",
+    errSlow: "Cela prend du temps sur votre connexion — appuyez de nouveau sur le bouton. Rien de ce que vous avez saisi n'est perdu.",
     errSomeDocs: "Certains documents n'ont pas été envoyés — appuyez sur le bouton pour réessayer. Votre candidature a bien été reçue.",
     errAttach: "Veuillez joindre au moins un document ou écrire un message.",
     needMore: "nous avons besoin d'un complément",
@@ -396,6 +400,8 @@ const I18N = {
     errLicense: "Tafadhali pakia leseni yako ya udereva.", errPermit: "Tafadhali pakia kibali chako cha ukimbizi / kibali cha kazi.",
     errBank: "Tafadhali pakia taarifa ya benki, au weka alama kuwa huna akaunti ya benki.",
     errNetwork: "Tatizo la mtandao — angalia muunganisho wako na ujaribu tena.",
+    upProgress: "Inapakia hati {n} kati ya {m}…",
+    errSlow: "Inachukua muda kwenye mtandao wako — tafadhali bonyeza kitufe tena. Hakuna ulichoandika kilichopotea.",
     errSomeDocs: "Baadhi ya nyaraka hazikupakiwa — bonyeza kitufe kujaribu tena. Maombi yako YAMEPOKELEWA.",
     errAttach: "Tafadhali ambatisha angalau nyaraka moja au andika ujumbe.",
     needMore: "tunahitaji taarifa zaidi kutoka kwako",
@@ -606,7 +612,8 @@ function buildDocs(){
 }
 
 function applyLang(lang){
-  T = I18N[lang] || I18N.en;
+  // English underneath, so a message not yet translated never shows blank.
+  T = Object.assign({}, I18N.en, I18N[lang] || {});
   try{localStorage.setItem("b4u_lang",lang);}catch(_){}
   for(const el of document.querySelectorAll("[data-t]")) el.textContent = T[el.dataset.t] ?? el.textContent;
   for(const el of document.querySelectorAll("[data-tp]")) el.placeholder = T[el.dataset.tp] ?? "";
@@ -828,7 +835,7 @@ function err(m){const e=document.getElementById("err");e.textContent=m;e.style.d
 function clearErr(){document.getElementById("err").style.display="none";}
 
 async function shrink(file){
-  if(!file.type.startsWith("image/")||file.size<1500000) return file;
+  if(!file.type.startsWith("image/")||file.size<900000) return file;
   try{
     const img=await createImageBitmap(file);
     const s=Math.min(1,1600/Math.max(img.width,img.height));
@@ -906,9 +913,13 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||undefined)};
     let d;
     try{
-      const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},30000);
+      // 60s: the server checks WhatsApp, translates and sends the
+      // confirmation before answering, and a slow day ran past 30s — the phone
+      // gave up while the application WAS saved. Tapping again now resumes it
+      // (server returns the same link) instead of "already applied".
+      const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},60000);
       d=await r.json();
-    }catch(_){btn.disabled=false;btn.textContent=T.submit;return err(T.errNetwork);}
+    }catch(e){btn.disabled=false;btn.textContent=T.submit;return err((e&&e.name==="AbortError")?T.errSlow:T.errNetwork);}
     if(!d.ok){btn.disabled=false;btn.textContent=T.submit;return err(d.error==="wa_unreachable"?T.errWaPhone:(d.error||T.errNetwork));}
     window.__token=d.token;
   } else if(!SUP){
@@ -936,9 +947,12 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
 
   btn.disabled=true;btn.textContent=T.uploadingBtn;
   let allOk=true;
-  for(const [type,file] of Object.entries(files)){
+  const todo=Object.entries(files).filter(([type])=>!done.has((type==="id_document"&&idType!=="sa_id")?"passport_asylum":type));
+  let n=0;
+  for(const [type,file] of todo){
     const realType=(type==="id_document"&&idType!=="sa_id")?"passport_asylum":type;
-    if(done.has(realType)) continue;
+    // progress on the button, so a slow connection never looks frozen
+    n++;btn.textContent=T.upProgress.replace("{n}",n).replace("{m}",todo.length);
     const ok=await uploadDoc(token,realType,file);
     if(ok) done.add(realType); else allOk=false;
   }
