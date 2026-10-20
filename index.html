@@ -298,7 +298,7 @@ const I18N = {
     errNetwork: "Network problem — please check your connection and try again.",
     upProgress: "Uploading document {n} of {m}…",
     errSlow: "This is taking long on your connection — please tap the button again. Nothing you entered is lost.",
-    errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
+    errFileType: "please attach a photo or a PDF.", errFileEmpty: "this file looks empty — please choose it again.", errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
     errAttach: "Please attach at least one document or write a message.",
     needMore: "we need a little more from you",
     needMoreDefault: "Please upload the outstanding documents below.",
@@ -850,6 +850,29 @@ async function shrink(file){
   }catch(_){return file;}
 }
 
+// Some phones hand over a file with NO type (Android file pickers, files
+// saved from WhatsApp) — the server then refused it as "not a photo or PDF",
+// AFTER the application was already saved (Muganda, 2026-10-20: applied, zero
+// documents). Work the type out from the name instead.
+function docMime(f){
+  if(f.type) return f.type;
+  const ext=(f.name.split(".").pop()||"").toLowerCase();
+  return ({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",webp:"image/webp",heic:"image/heic",heif:"image/heif",gif:"image/gif",pdf:"application/pdf"})[ext]||"";
+}
+// Every attached document must be uploadable BEFORE the application is sent —
+// a file we can't take must stop the form, never leave a document-less application.
+async function checkDocs(files){
+  for(const [type,file] of Object.entries(files)){
+    const m=docMime(file);
+    const label=(document.querySelector("#doc_"+type+" b")||{}).textContent||type;
+    if(!/^(image\/|application\/pdf)/.test(m)) return label+": "+(T.errFileType||"please attach a photo or a PDF.");
+    const f=await shrink(file);
+    if(f.size>8*1024*1024) return label+": "+T.tooBig;
+    if(f.size<100) return label+": "+(T.errFileEmpty||"this file looks empty — please choose it again.");
+  }
+  return null;
+}
+
 async function uploadDoc(token,type,file){
   const stId=type==="passport_asylum"?"id_document":type;
   const st=document.getElementById("st_"+stId);
@@ -863,7 +886,7 @@ async function uploadDoc(token,type,file){
       const ctl=new AbortController();
       const kill=setTimeout(()=>ctl.abort(),90000);
       const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name),
-        {method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
+        {method:"POST",headers:{"Content-Type":docMime(f)||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
       const d=await r.json();
       if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
       st.className="st err";st.textContent=d.error||T.upFailed;
@@ -907,6 +930,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(!files.drivers_license) return err(T.errLicense);
     if(!files.work_permit) return err(T.errPermit);
     if(!files.bank_statement&&!nobank) return err(T.errBank);
+    { const bad=await checkDocs(files); if(bad) return err(bad); }
 
     btn.disabled=true;btn.textContent=T.submitting;
     const payload={action:"submit",campaign:CAMPAIGN,website:v("website"),
