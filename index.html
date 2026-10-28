@@ -318,7 +318,7 @@ const I18N = {
     errNetwork: "Network problem — please check your connection and try again.",
     upProgress: "Uploading document {n} of {m}…",
     errSlow: "This is taking long on your connection — please tap the button again. Nothing you entered is lost.",
-    errFileType: "please attach a photo or a PDF.", errFileEmpty: "this file looks empty — please choose it again.", errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
+    checkingDocs: "Checking your documents…", errFileType: "please attach a photo or a PDF.", errFileEmpty: "this file looks empty — please choose it again.", errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
     errAttach: "Please attach at least one document or write a message.",
     needMore: "we need a little more from you",
     needMoreDefault: "Please upload the outstanding documents below.",
@@ -861,7 +861,17 @@ for(const r of document.querySelectorAll('input[name=availability]')){
 function err(m){const e=document.getElementById("err");e.textContent=m;e.style.display="block";e.scrollIntoView({behavior:"smooth",block:"center"});}
 function clearErr(){document.getElementById("err").style.display="none";}
 
+// Each photo is shrunk ONCE — checkDocs and the upload share the result
+// (2026-10-28: drivers saw the form "hang" while every photo was processed twice).
+const SHRUNK=new Map();
 async function shrink(file){
+  if(SHRUNK.has(file)) return SHRUNK.get(file);
+  // A budget phone can stall forever decoding a huge photo — after 8s use
+  // the original (the server takes up to 8MB) rather than freeze the form.
+  const out=await Promise.race([shrinkRaw(file), new Promise(r=>setTimeout(()=>r(file),8000))]);
+  SHRUNK.set(file,out); return out;
+}
+async function shrinkRaw(file){
   if(!file.type.startsWith("image/")||file.size<900000) return file;
   try{
     const img=await createImageBitmap(file);
@@ -953,7 +963,10 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(!files.drivers_license) return err(T.errLicense);
     if(!files.work_permit) return err(T.errPermit);
     if(!files.bank_statement&&!nobank) return err(T.errBank);
-    { const bad=await checkDocs(files); if(bad) return err(bad); }
+    // Visible straight away — the photo check can take a few seconds on a
+    // budget phone and a frozen button reads as "hanging".
+    btn.disabled=true;btn.textContent=T.checkingDocs||"Checking your documents…";
+    { const bad=await checkDocs(files); if(bad){btn.disabled=false;btn.textContent=T.submit;return err(bad);} }
 
     btn.disabled=true;btn.textContent=T.submitting;
     const payload={action:"submit",campaign:CAMPAIGN,website:v("website"),
