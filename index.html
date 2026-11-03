@@ -59,6 +59,40 @@
     #docsCard{grid-column:1/-1}
   }
   .gatebtn:active{border-color:var(--teal)}
+  /* Licence scanner — live camera only, never the gallery (Max, 2026-11-03) */
+  .lichint{font-size:12.5px;color:var(--mut);margin:6px 0 10px}
+  .licthumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .licslot{aspect-ratio:85.6/54;border:1px dashed var(--line);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mut);overflow:hidden;position:relative;background:#0E0F10}
+  .licslot img{width:100%;height:100%;object-fit:cover}
+  .licslot span.tag{position:absolute;left:6px;bottom:5px;background:rgba(0,0,0,.65);color:#fff;font-size:10.5px;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase}
+  .licslot.ok{border-style:solid;border-color:#2BB673}
+  .scanbtn{margin-top:10px;padding:13px;background:var(--teal);color:#fff}
+  #scan{position:fixed;inset:0;z-index:1000;background:#000;display:none;color:#fff;font-family:'Instrument Sans',sans-serif;overflow:hidden;touch-action:none}
+  #scan video,#scan .still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #scan .still{display:none}
+  #scan .frame{position:absolute;left:50%;top:44%;width:min(88vw,560px);aspect-ratio:85.6/54;transform:translate(-50%,-50%);border-radius:16px;box-shadow:0 0 0 200vmax rgba(0,0,0,.66);perspective:900px}
+  #scan .edge{position:absolute;inset:0;border-radius:16px;border:3px solid rgba(255,255,255,.95);transition:border-color .2s}
+  #scan .frame.flip .edge{animation:licflip .9s ease-in-out}
+  @keyframes licflip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+  #scan .frame.got .edge{border-color:#2BB673}
+  #scan .edge i{position:absolute;width:26px;height:26px;border:4px solid var(--teal)}
+  #scan .edge i:nth-child(1){left:-4px;top:-4px;border-right:0;border-bottom:0;border-top-left-radius:16px}
+  #scan .edge i:nth-child(2){right:-4px;top:-4px;border-left:0;border-bottom:0;border-top-right-radius:16px}
+  #scan .edge i:nth-child(3){left:-4px;bottom:-4px;border-right:0;border-top:0;border-bottom-left-radius:16px}
+  #scan .edge i:nth-child(4){right:-4px;bottom:-4px;border-left:0;border-top:0;border-bottom-right-radius:16px}
+  #scan .sc-top{display:block;position:absolute;left:0;right:0;top:0;padding:max(18px,env(safe-area-inset-top)) 18px 0;text-align:center}
+  #scan .sc-step{display:inline-block;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;background:var(--teal);padding:4px 10px;border-radius:20px;font-weight:700}
+  #scan h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;margin:12px 0 4px;letter-spacing:-.01em}
+  #scan .sc-top p{margin:0;font-size:13.5px;color:rgba(255,255,255,.78)}
+  #scan .sc-bar{position:absolute;left:0;right:0;bottom:0;padding:18px 18px max(22px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:14px}
+  #scan .sc-shutter{width:76px;height:76px;border-radius:50%;border:5px solid #fff;background:var(--teal);cursor:pointer}
+  #scan .sc-shutter:active{transform:scale(.94)}
+  #scan .sc-pill{border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.4);color:#fff;border-radius:12px;padding:13px 18px;font-size:15px;font-weight:600;cursor:pointer}
+  #scan .sc-pill.go{background:#fff;color:#000;border-color:#fff}
+  #scan .sc-x{position:absolute;right:14px;top:max(14px,env(safe-area-inset-top));width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:22px;cursor:pointer}
+  #scan .sc-msg{position:absolute;left:18px;right:18px;top:50%;transform:translateY(-50%);text-align:center;font-size:15px;display:none}
+  #scan .sc-msg button{margin-top:14px}
+  @media (prefers-reduced-motion:reduce){#scan .frame.flip .edge{animation:none}}
 </style></head><body>
 <img class="brand" src="logo.svg" alt="Bike 4 U — Own Your Ride" style="height:44px;width:auto;display:block">
 <div class="langs" id="langs" style="margin-top:10px"></div>
@@ -314,6 +348,7 @@ const I18N = {
     errTcs: "Please read and accept the Terms & Conditions first.",
     errIdDoc: "Please upload your ID / Passport / Asylum document.",
     errLicense: "Please upload your driver's license.", errPermit: "Please upload your asylum permit / work permit.",
+    licLive: "Take the photos now with your camera — pictures from your gallery or files are not accepted.", scanLic: "Scan driver's licence", rescanLic: "Scan again", scanFront: "Front of your driver's licence", scanBack: "Now the back of your licence", fitFrame: "Fit the card inside the frame — flat, in good light, no glare.", turnOver: "Turn your licence over", retake: "Retake", usePhoto: "Use photo", camDenied: "We can't open your camera. Allow camera access for this page in your browser, or tap below to take the photo with your phone's camera.", openCam: "Open camera", errLicBack: "Please scan the BACK of your driver's licence too.", licFront: "Front", licBack: "Back", stepOf: "Step {n} of 2",
     errBank: "Please upload a bank statement, or tick that you don't have a bank account.",
     errNetwork: "Network problem — please check your connection and try again.",
     upProgress: "Uploading document {n} of {m}…",
@@ -366,6 +401,7 @@ const I18N = {
     errTcs: "Veuillez d'abord lire et accepter les termes et conditions.",
     errIdDoc: "Veuillez téléverser votre pièce d'identité / passeport / document d'asile.",
     errLicense: "Veuillez téléverser votre permis de conduire.", errPermit: "Veuillez téléverser votre permis d'asile / permis de travail.",
+    licLive: "Prenez les photos maintenant avec votre caméra — les images de votre galerie ou de vos fichiers ne sont pas acceptées.", scanLic: "Scanner le permis de conduire", rescanLic: "Scanner à nouveau", scanFront: "Recto de votre permis de conduire", scanBack: "Maintenant le verso de votre permis", fitFrame: "Placez la carte dans le cadre — à plat, bien éclairée, sans reflet.", turnOver: "Retournez votre permis", retake: "Reprendre", usePhoto: "Utiliser la photo", camDenied: "Impossible d'ouvrir votre caméra. Autorisez l'accès à la caméra pour cette page, ou touchez ci-dessous pour prendre la photo avec l'appareil photo du téléphone.", openCam: "Ouvrir la caméra", errLicBack: "Veuillez aussi scanner le VERSO de votre permis de conduire.", licFront: "Recto", licBack: "Verso", stepOf: "Étape {n} sur 2",
     errBank: "Veuillez téléverser un relevé bancaire, ou cochez que vous n'avez pas de compte bancaire.",
     errNetwork: "Problème de réseau — vérifiez votre connexion et réessayez.",
     upProgress: "Envoi du document {n} sur {m}…",
@@ -418,6 +454,7 @@ const I18N = {
     errTcs: "Tafadhali soma na ukubali Vigezo na Masharti kwanza.",
     errIdDoc: "Tafadhali pakia kitambulisho / pasipoti / hati ya ukimbizi.",
     errLicense: "Tafadhali pakia leseni yako ya udereva.", errPermit: "Tafadhali pakia kibali chako cha ukimbizi / kibali cha kazi.",
+    licLive: "Piga picha sasa kwa kamera yako — picha kutoka kwenye galari au faili hazikubaliwi.", scanLic: "Skani leseni ya udereva", rescanLic: "Skani tena", scanFront: "Mbele ya leseni yako ya udereva", scanBack: "Sasa nyuma ya leseni yako", fitFrame: "Weka kadi ndani ya fremu — iwe bapa, kwenye mwanga mzuri, bila mng'ao.", turnOver: "Geuza leseni yako", retake: "Piga tena", usePhoto: "Tumia picha", camDenied: "Hatuwezi kufungua kamera yako. Ruhusu kamera kwa ukurasa huu, au bonyeza hapa chini kupiga picha kwa kamera ya simu.", openCam: "Fungua kamera", errLicBack: "Tafadhali skani pia upande wa NYUMA wa leseni yako ya udereva.", licFront: "Mbele", licBack: "Nyuma", stepOf: "Hatua {n} kati ya 2",
     errBank: "Tafadhali pakia taarifa ya benki, au weka alama kuwa huna akaunti ya benki.",
     errNetwork: "Tatizo la mtandao — angalia muunganisho wako na ujaribu tena.",
     upProgress: "Inapakia hati {n} kati ya {m}…",
@@ -470,6 +507,7 @@ const I18N = {
     errTcs: "Banza usome kandi wemere Amategeko n'Ibisabwa.",
     errIdDoc: "Pakira ikarata / pasiporo / icangombwa c'ubuhungiro.",
     errLicense: "Pakira uruhushya rwawe rwo gutwara.", errPermit: "Pakira uruhushya rwawe rw'ubuhungiro / uruhushya rw'akazi.",
+    licLive: "Fata amafoto ubu ukoresheje kamera yawe — amafoto ava mu bubiko canke mu madosiye ntiyemewe.", scanLic: "Fotora uruhushya rwo gutwara", rescanLic: "Subira ufotore", scanFront: "Imbere h'uruhushya rwawe rwo gutwara", scanBack: "Ubu inyuma y'uruhushya rwawe", fitFrame: "Shira ikarata mu kibanza — iringaniye, mu muco mwiza, ata kurabagirana.", turnOver: "Hindukiza uruhushya rwawe", retake: "Subira ufotore", usePhoto: "Koresha iyi foto", camDenied: "Ntidushobora kwugurura kamera yawe. Emera kamera kuri uru rupapuro, canke ukande hepfo ufotoreshe kamera ya telefone.", openCam: "Ugurura kamera", errLicBack: "Fotora kandi INYUMA y'uruhushya rwawe rwo gutwara.", licFront: "Imbere", licBack: "Inyuma", stepOf: "Intambwe {n} kuri 2",
     errBank: "Pakira urupapuro rwa banki, canke wemeze ko ata konti ya banki ufise.",
     errNetwork: "Ingorane ya internet — raba umuyoboro wawe hanyuma usubire ugerageze.",
     errSomeDocs: "Ivyangombwa bimwe ntivyapakiwe — fyonda buto usubire ugerageze. Ubusabe bwawe bwamaze kwakirwa.",
@@ -520,6 +558,7 @@ const I18N = {
     errTcs: "Chonde werengani ndi kuvomereza Malamulo ndi Zikhalidwe kaye.",
     errIdDoc: "Chonde kwezani ID / pasipoti / chikalata cha othawa.",
     errLicense: "Chonde kwezani laisensi yanu yoyendetsa.", errPermit: "Chonde kwezani chilolezo chanu cha othawa kwawo / chilolezo cha ntchito.",
+    licLive: "Jambulani zithunzi tsopano ndi kamera yanu — zithunzi zochokera mu galari kapena mafayilo sizilandiridwa.", scanLic: "Jambulani laisensi yoyendetsa", rescanLic: "Jambulaninso", scanFront: "Kutsogolo kwa laisensi yanu yoyendetsa", scanBack: "Tsopano kumbuyo kwa laisensi yanu", fitFrame: "Ikani khadi mkati mwa chimango — yowongoka, powala bwino, popanda kunyezimira.", turnOver: "Tembenuzani laisensi yanu", retake: "Jambulaninso", usePhoto: "Gwiritsani ntchito chithunzi", camDenied: "Sitingathe kutsegula kamera yanu. Lolezani kamera pa tsamba ili, kapena dinani pansipa kuti mujambule ndi kamera ya foni.", openCam: "Tsegulani kamera", errLicBack: "Chonde jambulaninso KUMBUYO kwa laisensi yanu yoyendetsa.", licFront: "Kutsogolo", licBack: "Kumbuyo", stepOf: "Gawo {n} mwa 2",
     errBank: "Chonde kwezani bank statement, kapena sankhani kuti mulibe akaunti ya banki.",
     errNetwork: "Vuto la intaneti — onani kulumikizana kwanu ndikuyesaninso.",
     errSomeDocs: "Zikalata zina sizinakwere — dinani batani kuti muyesenso. Pempho lanu LALANDIRIDWA.",
@@ -570,6 +609,7 @@ const I18N = {
     errTcs: "Ndapota tanga waverenga uye wabvuma Mitemo neMirayiridzo.",
     errIdDoc: "Ndapota kwidza chitupa / pasipoti / gwaro reasylum.",
     errLicense: "Ndapota kwidza rezinesi rako rekutyaira.", errPermit: "Ndapota kwidza mvumo yako yeasylum / work permit.",
+    licLive: "Tora mifananidzo izvozvi nekamera yako — mifananidzo inobva mugallery kana mumafaira haigamuchirwe.", scanLic: "Scan rezinesi rekutyaira", rescanLic: "Scan zvakare", scanFront: "Kumberi kwerezinesi rako rekutyaira", scanBack: "Zvino kumashure kwerezinesi rako", fitFrame: "Isa kadhi mukati mefuremu — yakati sandara, muchiedza chakanaka, isingapenyi.", turnOver: "Shandura rezinesi rako", retake: "Tora zvakare", usePhoto: "Shandisa mufananidzo", camDenied: "Hatikwanise kuvhura kamera yako. Bvumira kamera papeji iri, kana kudzvanya pazasi kuti utore nekamera yefoni.", openCam: "Vhura kamera", errLicBack: "Ndapota scan zvakare KUMASHURE kwerezinesi rako rekutyaira.", licFront: "Kumberi", licBack: "Kumashure", stepOf: "Danho {n} pa2",
     errBank: "Ndapota kwidza bank statement, kana sarudza kuti hauna akaunti yebhangi.",
     errNetwork: "Dambudziko renetiweki — tarisa internet yako woedza zvakare.",
     errSomeDocs: "Mamwe magwaro haana kukwira — baya bhatani kuti uedze zvakare. Chikumbiro chako CHAKAGAMUCHIRWA.",
@@ -614,6 +654,150 @@ const DOCS = [
   {type:"delivery_company_proof", key:"d_delivery_co", required:false},
 ];
 
+
+// ---- DRIVER'S LICENCE: live camera scan, front then back (Max, 2026-11-03) ----
+// "It mustn't allow the applicant to pick a document from their phone ... you
+// have to take the picture there and then." The licence card has NO file
+// picker: the rear camera opens full screen with a card-shaped frame, the
+// photo is cropped to that frame, then it asks for the back. If the browser
+// won't give us the camera (blocked / in-app browser), the fallback is the
+// phone's own camera via capture="environment" — still never the gallery.
+const LIC = { front: null, back: null, frontUrl: "", backUrl: "", via: { front: "", back: "" } };
+const SC = { side: "front", stream: null, shot: null, shotUrl: "" };
+const $s = (id) => document.getElementById(id);
+
+function renderLic(){
+  const box = $s("licbox"); if(!box) return;
+  const slot = (side) => {
+    const url = side==="front"?LIC.frontUrl:LIC.backUrl;
+    const lbl = side==="front"?T.licFront:T.licBack;
+    return '<div class="licslot'+(url?' ok':'')+'">'+(url?'<img src="'+url+'" alt="">':'')+'<span class="tag">'+lbl+(url?' ✓':'')+'</span></div>';
+  };
+  box.innerHTML = slot("front")+slot("back");
+  const b = $s("licbtn"); if(b) b.textContent = (LIC.front||LIC.back) ? T.rescanLic : T.scanLic;
+}
+
+function scanUI(mode){
+  // mode: live | review | blocked
+  const bar = $s("scBar"), front = SC.side==="front";
+  $s("scStep").textContent = (T.stepOf||"Step {n} of 2").replace("{n}", front?1:2);
+  $s("scTitle").textContent = front ? T.scanFront : T.scanBack;
+  $s("scHint").textContent = T.fitFrame;
+  const still = document.querySelector("#scan .still"), frame = document.querySelector("#scan .frame");
+  $s("scMsg").style.display = mode==="blocked" ? "block" : "none";
+  frame.style.display = mode==="blocked" ? "none" : "block";
+  // live camera: review = the frozen video (exactly what's in the frame);
+  // phone-camera fallback: review = the photo it returned
+  still.style.display = mode==="review" && SC.via==="capture" ? "block" : "none";
+  const vid = document.querySelector("#scan video");
+  if (mode==="live" && vid.paused && SC.stream) vid.play().catch(()=>{});
+  frame.classList.toggle("got", mode==="review");
+  bar.innerHTML = "";
+  if (mode==="live") {
+    const sh = document.createElement("button"); sh.type="button"; sh.className="sc-shutter"; sh.setAttribute("aria-label", T.scanLic);
+    sh.onclick = takeShot; bar.appendChild(sh);
+  } else if (mode==="review") {
+    const r = document.createElement("button"); r.type="button"; r.className="sc-pill"; r.textContent=T.retake;
+    r.onclick = () => { SC.shot=null; SC.via==="capture" ? openCaptureInput() : scanUI("live"); };
+    const u = document.createElement("button"); u.type="button"; u.className="sc-pill go"; u.textContent=T.usePhoto;
+    u.onclick = acceptShot; bar.append(r,u);
+  } else {
+    $s("scMsgText").textContent = T.camDenied;
+    $s("scFallback").textContent = T.openCam;
+  }
+}
+
+async function openScanner(){
+  SC.side = "front"; SC.shot = null;
+  $s("scan").style.display = "block";
+  document.body.style.overflow = "hidden";
+  await startCamera();
+}
+
+async function startCamera(){
+  stopCamera();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { SC.via="capture"; return scanUI("blocked"); }
+  try {
+    SC.stream = await navigator.mediaDevices.getUserMedia({ audio:false, video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} } });
+    const v = document.querySelector("#scan video");
+    v.srcObject = SC.stream; await v.play().catch(()=>{});
+    SC.via = "live";
+    scanUI("live");
+  } catch (_) { SC.via="capture"; scanUI("blocked"); }
+}
+
+function stopCamera(){
+  if (SC.stream) { for (const t of SC.stream.getTracks()) t.stop(); SC.stream = null; }
+}
+
+function closeScanner(){
+  stopCamera();
+  $s("scan").style.display = "none";
+  document.body.style.overflow = "";
+  renderLic();
+}
+
+// Crop the live frame to exactly what sits inside the card outline. The video
+// is drawn object-fit:cover, so map screen pixels back to camera pixels.
+function takeShot(){
+  const v = document.querySelector("#scan video");
+  if (!v.videoWidth) return;
+  const vr = v.getBoundingClientRect(), fr = document.querySelector("#scan .frame").getBoundingClientRect();
+  const scale = Math.max(vr.width / v.videoWidth, vr.height / v.videoHeight);
+  const ox = (vr.width - v.videoWidth*scale)/2, oy = (vr.height - v.videoHeight*scale)/2;
+  const pad = 0.04 * fr.width; // a little margin so card edges are never clipped
+  let sx = (fr.left - pad - vr.left - ox)/scale, sy = (fr.top - pad - vr.top - oy)/scale;
+  let sw = (fr.width + 2*pad)/scale, sh = (fr.height + 2*pad)/scale;
+  sx = Math.max(0, sx); sy = Math.max(0, sy);
+  sw = Math.min(v.videoWidth - sx, sw); sh = Math.min(v.videoHeight - sy, sh);
+  const out = Math.min(1600, Math.round(sw)) / sw;
+  const cv = document.createElement("canvas"); cv.width = Math.round(sw*out); cv.height = Math.round(sh*out);
+  cv.getContext("2d").drawImage(v, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
+  v.pause();
+  cv.toBlob((b) => {
+    if (!b) return;
+    SC.shot = new File([b], "licence_"+SC.side+"_"+Date.now()+".jpg", { type:"image/jpeg" });
+    showReview(cv.toDataURL("image/jpeg", 0.7));
+  }, "image/jpeg", 0.9);
+}
+
+function showReview(url){
+  const still = document.querySelector("#scan .still");
+  still.src = url; SC.shotUrl = url;
+  scanUI("review");
+}
+
+function openCaptureInput(){ const i=$s("scCapture"); i.value=""; i.click(); }
+
+function acceptShot(){
+  if (!SC.shot) return;
+  LIC[SC.side] = SC.shot; LIC[SC.side+"Url"] = SC.shotUrl; LIC.via[SC.side] = SC.via;
+  if (SC.side === "front") {
+    // turn it over: flip the frame, ask for the back
+    SC.side = "back"; SC.shot = null;
+    const fr = document.querySelector("#scan .frame");
+    fr.classList.remove("flip"); void fr.offsetWidth; fr.classList.add("flip");
+    $s("scHint").textContent = T.turnOver;
+    if (SC.via === "capture") { scanUI("blocked"); $s("scMsgText").textContent = T.turnOver; } else { scanUI("live"); $s("scHint").textContent = T.turnOver; }
+  } else {
+    closeScanner();
+    const st = $s("st_drivers_license"); if (st) { st.className="st ok"; st.textContent = ""; }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $s("scClose").onclick = closeScanner;
+  $s("scFallback").onclick = openCaptureInput;
+  $s("scCapture").addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    // Phones stamp a camera capture with "now"; a file older than 2 minutes
+    // was not just taken — refuse it (gallery sneaking in on some browsers).
+    if (f.lastModified && Date.now() - f.lastModified > 120000) { scanUI("blocked"); $s("scMsgText").textContent = T.licLive; return; }
+    SC.shot = new File([f], "licence_"+SC.side+"_"+Date.now()+"."+((f.name.split(".").pop()||"jpg").toLowerCase()), { type: f.type || "image/jpeg" });
+    showReview(URL.createObjectURL(f));
+  });
+});
+
 function buildDocs(){
   const docsDiv=document.getElementById("docs");
   docsDiv.innerHTML="";
@@ -622,6 +806,17 @@ function buildDocs(){
     // the document cards Max actually asked for (Max, 2026-08-06).
     if (SUP && SUP.sections && !SUP.sections.includes(d.type)) continue;
     const have = SUP && (SUP.existing.includes(d.type) || (d.type==="id_document" && SUP.existing.includes("passport_asylum")));
+    if (d.type === "drivers_license") {
+      docsDiv.insertAdjacentHTML("beforeend",
+        '<div class="doc" id="doc_drivers_license"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#D0112B">*</span>':'')+
+        (have?' <span class="have">'+T.already+'</span>':'')+
+        '<p class="lichint">'+T.licLive+'</p><div class="licthumbs" id="licbox"></div>'+
+        '<button type="button" class="btn scanbtn" id="licbtn"></button>'+
+        '<div class="st" id="st_drivers_license"></div></div>');
+      document.getElementById("licbtn").onclick = openScanner;
+      renderLic();
+      continue;
+    }
     docsDiv.insertAdjacentHTML("beforeend",
       '<div class="doc" id="doc_'+d.type+'"><b>'+T[d.key]+'</b>'+(d.required&&!have?' <span style="color:#D0112B">*</span>':'')+
       (have?' <span class="have">'+T.already+'</span>':'')+
@@ -897,7 +1092,7 @@ function docMime(f){
 async function checkDocs(files){
   for(const [type,file] of Object.entries(files)){
     const m=docMime(file);
-    const label=(document.querySelector("#doc_"+type+" b")||{}).textContent||type;
+    const label=(document.querySelector("#doc_"+type.replace("__back","")+" b")||{}).textContent||type;
     if(!/^(image\/|application\/pdf)/.test(m)) return label+": "+(T.errFileType||"please attach a photo or a PDF.");
     const f=await shrink(file);
     if(f.size>8*1024*1024) return label+": "+T.tooBig;
@@ -907,6 +1102,10 @@ async function checkDocs(files){
 }
 
 async function uploadDoc(token,type,file){
+  // The licence goes up as two drivers_license documents, front and back,
+  // labelled with how they were captured.
+  let side="";
+  if(type.startsWith("drivers_license")){ side=type.endsWith("__back")?"back":"front"; type="drivers_license"; }
   const stId=type==="passport_asylum"?"id_document":type;
   const st=document.getElementById("st_"+stId);
   st.className="st";st.textContent=T.uploading;
@@ -918,7 +1117,7 @@ async function uploadDoc(token,type,file){
       // abort after 90s so the retry flow takes over instead of hanging
       const ctl=new AbortController();
       const kill=setTimeout(()=>ctl.abort(),90000);
-      const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name),
+      const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name)+(side?"&side="+side+"&via="+(LIC.via[side]||""):""),
         {method:"POST",headers:{"Content-Type":docMime(f)||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
       const d=await r.json();
       if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
@@ -934,9 +1133,13 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
   const F=ev.target, btn=document.getElementById("go");
   const v=n=>((F[n]&&F[n].value)||"").trim(); // handler-scope: SUP branch needs it too
   const files={};let idType="sa_id";
-  for(const inp of document.querySelectorAll('input[type=file]')){
+  for(const inp of document.querySelectorAll('input[type=file][data-type]')){
     if(inp.files[0]) files[inp.dataset.type]=inp.files[0];
   }
+  if(LIC.front) files.drivers_license=LIC.front;
+  if(LIC.back) files["drivers_license__back"]=LIC.back;
+  // half a licence is no licence: once one side is in, the other is required
+  if((LIC.front||LIC.back)&&!(LIC.front&&LIC.back)) return err(LIC.front?T.errLicBack:T.errLicense);
   const nobank=document.getElementById("nobank").checked;
 
   let token=SUP&&SUP.token;
@@ -1029,4 +1232,14 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
   window.scrollTo({top:0,behavior:"smooth"});
 });
 </script>
+<div id="scan" role="dialog" aria-modal="true">
+  <video playsinline muted autoplay></video>
+  <img class="still" alt="">
+  <div class="frame"><div class="edge"><i></i><i></i><i></i><i></i></div></div>
+  <div class="sc-top"><span class="sc-step" id="scStep"></span><h2 id="scTitle"></h2><p id="scHint"></p></div>
+  <button type="button" class="sc-x" id="scClose" aria-label="Close">×</button>
+  <div class="sc-msg" id="scMsg"><div id="scMsgText"></div><button type="button" class="sc-pill go" id="scFallback"></button></div>
+  <div class="sc-bar" id="scBar"></div>
+  <input type="file" accept="image/*" capture="environment" id="scCapture" style="display:none">
+</div>
 </body></html>
