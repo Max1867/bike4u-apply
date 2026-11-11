@@ -353,7 +353,7 @@ const I18N = {
     errNetwork: "Network problem — please check your connection and try again.",
     upProgress: "Uploading document {n} of {m}…",
     errSlow: "This is taking long on your connection — please tap the button again. Nothing you entered is lost.",
-    checkingDocs: "Checking your documents…", errFileType: "please attach a photo or a PDF.", errFileEmpty: "this file looks empty — please choose it again.", errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
+    checkingDocs: "Checking your documents…", errFileType: "please attach a photo or a PDF.", errFileEmpty: "this file looks empty — please choose it again.", errNotSubmitted: "Your application was NOT submitted — some documents did not upload (your connection may have dropped). Check your signal and tap Submit again. Documents that already went through will not be sent twice.", errSomeDocs: "Some documents didn't upload — tap the button to retry just those. Your application itself HAS been received.",
     errAttach: "Please attach at least one document or write a message.",
     needMore: "we need a little more from you",
     needMoreDefault: "Please upload the outstanding documents below.",
@@ -406,7 +406,7 @@ const I18N = {
     errNetwork: "Problème de réseau — vérifiez votre connexion et réessayez.",
     upProgress: "Envoi du document {n} sur {m}…",
     errSlow: "Cela prend du temps sur votre connexion — appuyez de nouveau sur le bouton. Rien de ce que vous avez saisi n'est perdu.",
-    errSomeDocs: "Certains documents n'ont pas été envoyés — appuyez sur le bouton pour réessayer. Votre candidature a bien été reçue.",
+    errNotSubmitted: "Votre candidature n'a PAS été envoyée — certains documents n'ont pas été téléchargés (la connexion a peut-être été coupée). Vérifiez votre réseau et appuyez de nouveau sur Envoyer. Les documents déjà envoyés ne seront pas renvoyés.", errSomeDocs: "Certains documents n'ont pas été envoyés — appuyez sur le bouton pour réessayer. Votre candidature a bien été reçue.",
     errAttach: "Veuillez joindre au moins un document ou écrire un message.",
     needMore: "nous avons besoin d'un complément",
     needMoreDefault: "Veuillez téléverser les documents manquants ci-dessous.",
@@ -459,7 +459,7 @@ const I18N = {
     errNetwork: "Tatizo la mtandao — angalia muunganisho wako na ujaribu tena.",
     upProgress: "Inapakia hati {n} kati ya {m}…",
     errSlow: "Inachukua muda kwenye mtandao wako — tafadhali bonyeza kitufe tena. Hakuna ulichoandika kilichopotea.",
-    errSomeDocs: "Baadhi ya nyaraka hazikupakiwa — bonyeza kitufe kujaribu tena. Maombi yako YAMEPOKELEWA.",
+    errNotSubmitted: "Maombi yako HAYAJATUMWA — baadhi ya nyaraka hazikupakiwa (huenda mtandao ulikatika). Angalia mtandao wako na ubonyeze Tuma tena. Nyaraka zilizokwisha pakiwa hazitatumwa mara mbili.", errSomeDocs: "Baadhi ya nyaraka hazikupakiwa — bonyeza kitufe kujaribu tena. Maombi yako YAMEPOKELEWA.",
     errAttach: "Tafadhali ambatisha angalau nyaraka moja au andika ujumbe.",
     needMore: "tunahitaji taarifa zaidi kutoka kwako",
     needMoreDefault: "Tafadhali pakia nyaraka zinazokosekana hapa chini.",
@@ -510,7 +510,7 @@ const I18N = {
     licLive: "Fata amafoto ubu ukoresheje kamera yawe — amafoto ava mu bubiko canke mu madosiye ntiyemewe.", scanLic: "Fotora uruhushya rwo gutwara", rescanLic: "Subira ufotore", scanFront: "Imbere h'uruhushya rwawe rwo gutwara", scanBack: "Ubu inyuma y'uruhushya rwawe", fitFrame: "Shira ikarata mu kibanza — iringaniye, mu muco mwiza, ata kurabagirana.", turnOver: "Hindukiza uruhushya rwawe", retake: "Subira ufotore", usePhoto: "Koresha iyi foto", camDenied: "Ntidushobora kwugurura kamera yawe. Emera kamera kuri uru rupapuro, canke ukande hepfo ufotoreshe kamera ya telefone.", openCam: "Ugurura kamera", errLicBack: "Fotora kandi INYUMA y'uruhushya rwawe rwo gutwara.", licFront: "Imbere", licBack: "Inyuma", stepOf: "Intambwe {n} kuri 2",
     errBank: "Pakira urupapuro rwa banki, canke wemeze ko ata konti ya banki ufise.",
     errNetwork: "Ingorane ya internet — raba umuyoboro wawe hanyuma usubire ugerageze.",
-    errSomeDocs: "Ivyangombwa bimwe ntivyapakiwe — fyonda buto usubire ugerageze. Ubusabe bwawe bwamaze kwakirwa.",
+    errNotSubmitted: "Ubusabe bwawe NTIBWARUNGITSWE — ivyangombwa bimwe ntivyapakiwe (umurongo ushobora kuba wacitse). Raba ko ufise umurongo hanyuma usubire gufyonda Rungika. Ivyangombwa vyamaze gushika ntibizosubira kurungikwa.", errSomeDocs: "Ivyangombwa bimwe ntivyapakiwe — fyonda buto usubire ugerageze. Ubusabe bwawe bwamaze kwakirwa.",
     errAttach: "Shiramwo n'imiburiburi icangombwa kimwe canke wandike ubutumwa.",
     needMore: "dukeneye ayandi makuru kuri wewe",
     needMoreDefault: "Pakira ivyangombwa bibura aho munsi.",
@@ -561,7 +561,7 @@ const I18N = {
     licLive: "Jambulani zithunzi tsopano ndi kamera yanu — zithunzi zochokera mu galari kapena mafayilo sizilandiridwa.", scanLic: "Jambulani laisensi yoyendetsa", rescanLic: "Jambulaninso", scanFront: "Kutsogolo kwa laisensi yanu yoyendetsa", scanBack: "Tsopano kumbuyo kwa laisensi yanu", fitFrame: "Ikani khadi mkati mwa chimango — yowongoka, powala bwino, popanda kunyezimira.", turnOver: "Tembenuzani laisensi yanu", retake: "Jambulaninso", usePhoto: "Gwiritsani ntchito chithunzi", camDenied: "Sitingathe kutsegula kamera yanu. Lolezani kamera pa tsamba ili, kapena dinani pansipa kuti mujambule ndi kamera ya foni.", openCam: "Tsegulani kamera", errLicBack: "Chonde jambulaninso KUMBUYO kwa laisensi yanu yoyendetsa.", licFront: "Kutsogolo", licBack: "Kumbuyo", stepOf: "Gawo {n} mwa 2",
     errBank: "Chonde kwezani bank statement, kapena sankhani kuti mulibe akaunti ya banki.",
     errNetwork: "Vuto la intaneti — onani kulumikizana kwanu ndikuyesaninso.",
-    errSomeDocs: "Zikalata zina sizinakwere — dinani batani kuti muyesenso. Pempho lanu LALANDIRIDWA.",
+    errNotSubmitted: "Fomu yanu SINATUMIZIDWE — zikalata zina sizinakwezedwe (mwina netiweki inadulidwa). Onani netiweki yanu ndipo dinaninso Tumizani. Zikalata zomwe zafika kale sizidzatumizidwa kawiri.", errSomeDocs: "Zikalata zina sizinakwere — dinani batani kuti muyesenso. Pempho lanu LALANDIRIDWA.",
     errAttach: "Chonde ikani chikalata chimodzi kapena lembani uthenga.",
     needMore: "tikufuna zambiri kuchokera kwa inu",
     needMoreDefault: "Chonde kwezani zikalata zosowa pansipa.",
@@ -612,7 +612,7 @@ const I18N = {
     licLive: "Tora mifananidzo izvozvi nekamera yako — mifananidzo inobva mugallery kana mumafaira haigamuchirwe.", scanLic: "Scan rezinesi rekutyaira", rescanLic: "Scan zvakare", scanFront: "Kumberi kwerezinesi rako rekutyaira", scanBack: "Zvino kumashure kwerezinesi rako", fitFrame: "Isa kadhi mukati mefuremu — yakati sandara, muchiedza chakanaka, isingapenyi.", turnOver: "Shandura rezinesi rako", retake: "Tora zvakare", usePhoto: "Shandisa mufananidzo", camDenied: "Hatikwanise kuvhura kamera yako. Bvumira kamera papeji iri, kana kudzvanya pazasi kuti utore nekamera yefoni.", openCam: "Vhura kamera", errLicBack: "Ndapota scan zvakare KUMASHURE kwerezinesi rako rekutyaira.", licFront: "Kumberi", licBack: "Kumashure", stepOf: "Danho {n} pa2",
     errBank: "Ndapota kwidza bank statement, kana sarudza kuti hauna akaunti yebhangi.",
     errNetwork: "Dambudziko renetiweki — tarisa internet yako woedza zvakare.",
-    errSomeDocs: "Mamwe magwaro haana kukwira — baya bhatani kuti uedze zvakare. Chikumbiro chako CHAKAGAMUCHIRWA.",
+    errNotSubmitted: "Chikumbiro chako HACHINA kutumirwa — mamwe magwaro haana kukwidzwa (pamwe network yadimbuka). Tarisa network yako wodzvanya Tumira zvakare. Magwaro atosvika haazotumirwa kaviri.", errSomeDocs: "Mamwe magwaro haana kukwira — baya bhatani kuti uedze zvakare. Chikumbiro chako CHAKAGAMUCHIRWA.",
     errAttach: "Ndapota isa gwaro rimwe chete kana kunyora shoko.",
     needMore: "tinoda rumwe ruzivo kubva kwauri",
     needMoreDefault: "Ndapota kwidza magwaro asipo pazasi.",
@@ -622,6 +622,15 @@ const I18N = {
 
 const LANGS=[["en","🇬🇧","English"],["fr","🇨🇩","Français"],["sw","🇹🇿","Kiswahili"],["rn","🇧🇮","Kirundi"],["ny","🇲🇼","Chichewa"],["sn","🇿🇼","Shona"]];
 let T = I18N.en;
+// Documents go up BEFORE the application exists (Max, 2026-11-11). One stage
+// id per form, kept across a reload so a retry never re-sends what landed.
+let STAGE = null;
+try { STAGE = sessionStorage.getItem("b4u_stage"); } catch(_) {}
+if (!STAGE) {
+  STAGE = (self.crypto && crypto.randomUUID) ? crypto.randomUUID()
+    : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random()*16|0; return (c==="x"?r:(r&3|8)).toString(16); });
+  try { sessionStorage.setItem("b4u_stage", STAGE); } catch(_) {}
+}
 let SUP = null;        // {token, existing:[...]} when opened via personal link
 let CT = null;         // chosen contract type (rent_to_own | rto_serviced | rental_only)
 let RATE = 750;        // chosen RTO weekly tier
@@ -1117,7 +1126,7 @@ async function uploadDoc(token,type,file){
       // abort after 90s so the retry flow takes over instead of hanging
       const ctl=new AbortController();
       const kill=setTimeout(()=>ctl.abort(),90000);
-      const r=await fetch(API+"?action=upload&t="+token+"&type="+type+"&name="+encodeURIComponent(f.name)+(side?"&side="+side+"&via="+(LIC.via[side]||""):""),
+      const r=await fetch(API+"?action=upload&"+(token?"t="+token:"s="+STAGE)+"&type="+type+"&name="+encodeURIComponent(f.name)+(side?"&side="+side+"&via="+(LIC.via[side]||""):""),
         {method:"POST",headers:{"Content-Type":docMime(f)||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
       const d=await r.json();
       if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
@@ -1171,8 +1180,19 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     btn.disabled=true;btn.textContent=T.checkingDocs||"Checking your documents…";
     { const bad=await checkDocs(files); if(bad){btn.disabled=false;btn.textContent=T.submit;return err(bad);} }
 
+    // 1. Every document up first. Any failure = NOT submitted, try again.
+    btn.disabled=true;btn.textContent=T.uploadingBtn;
+    { let ok=true,n=0;
+      const todoS=Object.entries(files).filter(([type])=>!done.has((type==="id_document"&&idType!=="sa_id")?"passport_asylum":type));
+      for(const [type,file] of todoS){
+        const realType=(type==="id_document"&&idType!=="sa_id")?"passport_asylum":type;
+        n++;btn.textContent=T.upProgress.replace("{n}",n).replace("{m}",todoS.length);
+        if(await uploadDoc(null,realType,file)) done.add(realType); else ok=false;
+      }
+      if(!ok){btn.disabled=false;btn.textContent=T.submit;return err(T.errNotSubmitted);}
+    }
     btn.disabled=true;btn.textContent=T.submitting;
-    const payload={action:"submit",campaign:CAMPAIGN,website:v("website"),
+    const payload={action:"submit",stageId:STAGE,campaign:CAMPAIGN,website:v("website"),
       firstName:v("firstName"),lastName:v("lastName"),phone:fullPhone,email:v("email"),
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
@@ -1187,8 +1207,18 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       const r=await fWT(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)},60000);
       d=await r.json();
     }catch(e){btn.disabled=false;btn.textContent=T.submit;return err((e&&e.name==="AbortError")?T.errSlow:T.errNetwork);}
-    if(!d.ok){btn.disabled=false;btn.textContent=T.submit;return err(d.error==="wa_unreachable"?T.errWaPhone:(d.error||T.errNetwork));}
+    if(!d.ok){
+      btn.disabled=false;btn.textContent=T.submit;
+      if(d.error==="docs_missing"){
+        // the server is the judge: re-send whatever it says never arrived
+        const map={id:["id_document","passport_asylum"],license_front:["drivers_license"],license_back:["drivers_license__back"],bank_statement:["bank_statement"],work_permit:["work_permit"]};
+        for(const k of (d.missing||[])) for(const t of (map[k]||[])) done.delete(t);
+        return err(T.errNotSubmitted);
+      }
+      return err(d.error==="wa_unreachable"?T.errWaPhone:(d.error||T.errNetwork));
+    }
     window.__token=d.token;
+    try { sessionStorage.removeItem("b4u_stage"); } catch(_) {}
   } else if(!SUP){
     idType=((F.idType&&F.idType.value)||"sa_id");
   }
