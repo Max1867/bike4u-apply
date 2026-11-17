@@ -865,6 +865,10 @@ function applyLang(lang){
 
 async function init(){
   const t = new URLSearchParams(location.search).get("t");
+  // Takealot (Mr D) pre-vetted drivers (Max, 2026-11-17): ?tk=1 = same form, no
+  // referral, the fixed R700 x 24-month serviced plan, bank statement optional.
+  // Submitting is the "yes": the server approves the card on the spot.
+  window.TK = new URLSearchParams(location.search).get("tk") === "1";
   let state;
   // retry transient failures — "closed" must only ever mean genuinely closed
   for(let attempt=1;attempt<=4;attempt++){
@@ -987,6 +991,21 @@ async function init(){
     });
   }
   document.getElementById("tcslink").href = API + "?tcs=1";
+  if(window.TK && !t){
+    // Pick the serviced plan for him (T&Cs link follows), then hide the choice
+    // and the referral card; show what his plan is.
+    try{ document.getElementById("ctServiced").click(); }catch(_){}
+    CT = "rto_serviced";
+    document.getElementById("tcslink").href = API + "?tcs=1&ct=rto&sv=1";
+    document.getElementById("contractCard").style.display="none";
+    document.getElementById("refCard").style.display="none";
+    const b=document.createElement("div");
+    b.className="card"; b.style.borderColor="rgba(215,224,34,.55)";
+    b.innerHTML='<h2 style="margin:0 0 6px;font-size:17px;color:var(--teal)">Takealot / Mr D driver — you are pre-vetted</h2>'
+      +'<p style="margin:0 0 6px">No reference needed. Your plan: <b>R700 per week, rent-to-own over 24 months</b>, servicing by the Bike 4 U workshop included. After 24 months the bike is yours.</p>'
+      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back). A bank statement helps us but is not required — tick "I don\'t have a bank account" if you would rather not send one.</p>';
+    const cc=document.getElementById("contractCard"); cc.parentNode.insertBefore(b, cc);
+  }
   if(t && state.sup){
     // sections = the exact list Max requested (docs / "referral" / "note").
     // null/absent = legacy request → show everything (safe fallback).
@@ -1174,7 +1193,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(!files.id_document) return err(T.errIdDoc);
     if(!files.drivers_license) return err(T.errLicense);
     if(!files.work_permit) return err(T.errPermit);
-    if(!files.bank_statement&&!nobank) return err(T.errBank);
+    if(!files.bank_statement&&!nobank&&!window.TK) return err(T.errBank);
     // Visible straight away — the photo check can take a few seconds on a
     // budget phone and a frozen button reads as "hanging".
     btn.disabled=true;btn.textContent=T.checkingDocs||"Checking your documents…";
@@ -1197,7 +1216,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refNat?refFull:"",ownerPin:OWNERPIN||undefined,
-      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||undefined)};
+      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||"")||(window.TK?"takealot":undefined),takealot:window.TK||undefined};
     let d;
     try{
       // 60s: the server checks WhatsApp, translates and sends the
