@@ -178,10 +178,10 @@
   <label class="req" data-t="address"></label><input name="address">
 </div>
 
-<div class="card">
+<div class="card" id="expCard">
   <h3 style="margin:0 0 4px" data-t="deliveryExp"></h3>
-  <label class="req" data-t="platformQ"></label>
-  <select name="deliveryCompany">
+  <label class="req" data-t="platformQ" id="platformL"></label>
+  <select name="deliveryCompany" id="platformS">
     <option value="" data-t="selectOne"></option>
     <option value="uber">Uber Eats</option><option value="mr_d">Mr D</option>
     <option value="checkers">Checkers Sixty60</option><option value="picup">Picup</option>
@@ -193,7 +193,7 @@
     <option>Under R1000</option><option>R1000 - R2000</option>
     <option>R2000 - R3500</option><option>Over R3500</option>
   </select>
-  <label class="req" data-t="durationQ"></label>
+  <label class="req" data-t="durationQ" id="durationL"></label>
   <select name="duration">
     <option value="" data-t="selectOne"></option>
     <option>Less than 6 months</option><option>6 months - 1 year</option>
@@ -318,6 +318,8 @@ const I18N = {
     idType: "ID type", saId: "South African ID", passport: "Passport", asylum: "Asylum Document",
     idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
     deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?", selectOne: "Select…",
+    deliveryExpTk: "Your Takealot / Mr D experience", durationQTk: "How long have you been delivering for Takealot / Mr D?",
+    learnerOnly: "I only have a learner's licence (one side — no back to scan)", scanLearner: "Scan learner's licence", scanFrontLearner: "Your learner's licence", stepOfOne: "Step 1 of 1",
     earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
     referralTitle: "Referral (REQUIRED)",
     referralHint: "Every application needs a referral from an existing Bike 4 U driver. Enter their full name and phone number — we check this against our records and will contact them to confirm.",
@@ -671,7 +673,8 @@ const DOCS = [
 // photo is cropped to that frame, then it asks for the back. If the browser
 // won't give us the camera (blocked / in-app browser), the fallback is the
 // phone's own camera via capture="environment" — still never the gallery.
-const LIC = { front: null, back: null, frontUrl: "", backUrl: "", via: { front: "", back: "" } };
+// learner = learner's licence: ONE side only, no back (Max, 2026-11-18; Takealot link)
+const LIC = { front: null, back: null, frontUrl: "", backUrl: "", via: { front: "", back: "" }, learner: false };
 const SC = { side: "front", stream: null, shot: null, shotUrl: "" };
 const $s = (id) => document.getElementById(id);
 
@@ -682,15 +685,15 @@ function renderLic(){
     const lbl = side==="front"?T.licFront:T.licBack;
     return '<div class="licslot'+(url?' ok':'')+'">'+(url?'<img src="'+url+'" alt="">':'')+'<span class="tag">'+lbl+(url?' ✓':'')+'</span></div>';
   };
-  box.innerHTML = slot("front")+slot("back");
-  const b = $s("licbtn"); if(b) b.textContent = (LIC.front||LIC.back) ? T.rescanLic : T.scanLic;
+  box.innerHTML = LIC.learner ? slot("front") : slot("front")+slot("back");
+  const b = $s("licbtn"); if(b) b.textContent = (LIC.front||LIC.back) ? T.rescanLic : (LIC.learner ? (T.scanLearner||T.scanLic) : T.scanLic);
 }
 
 function scanUI(mode){
   // mode: live | review | blocked
   const bar = $s("scBar"), front = SC.side==="front";
-  $s("scStep").textContent = (T.stepOf||"Step {n} of 2").replace("{n}", front?1:2);
-  $s("scTitle").textContent = front ? T.scanFront : T.scanBack;
+  $s("scStep").textContent = LIC.learner ? (T.stepOfOne||"Step 1 of 1") : (T.stepOf||"Step {n} of 2").replace("{n}", front?1:2);
+  $s("scTitle").textContent = LIC.learner ? (T.scanFrontLearner||T.scanFront) : (front ? T.scanFront : T.scanBack);
   $s("scHint").textContent = T.fitFrame;
   const still = document.querySelector("#scan .still"), frame = document.querySelector("#scan .frame");
   $s("scMsg").style.display = mode==="blocked" ? "block" : "none";
@@ -781,7 +784,7 @@ function openCaptureInput(){ const i=$s("scCapture"); i.value=""; i.click(); }
 function acceptShot(){
   if (!SC.shot) return;
   LIC[SC.side] = SC.shot; LIC[SC.side+"Url"] = SC.shotUrl; LIC.via[SC.side] = SC.via;
-  if (SC.side === "front") {
+  if (SC.side === "front" && !LIC.learner) {
     // turn it over: flip the frame, ask for the back
     SC.side = "back"; SC.shot = null;
     const fr = document.querySelector("#scan .frame");
@@ -821,8 +824,11 @@ function buildDocs(){
         (have?' <span class="have">'+T.already+'</span>':'')+
         '<p class="lichint">'+T.licLive+'</p><div class="licthumbs" id="licbox"></div>'+
         '<button type="button" class="btn scanbtn" id="licbtn"></button>'+
+        (window.TK ? '<div class="check" style="margin-top:8px"><input type="checkbox" id="learner"><label for="learner" style="margin:0;color:var(--txt)">'+(T.learnerOnly||"I only have a learner\'s licence")+'</label></div>' : '')+
         '<div class="st" id="st_drivers_license"></div></div>');
       document.getElementById("licbtn").onclick = openScanner;
+      const lc = document.getElementById("learner");
+      if (lc) { lc.checked = LIC.learner; lc.onchange = () => { LIC.learner = lc.checked; if (LIC.learner) { LIC.back = null; LIC.backUrl = ""; LIC.via.back = ""; } renderLic(); }; }
       renderLic();
       continue;
     }
@@ -999,11 +1005,18 @@ async function init(){
     document.getElementById("tcslink").href = API + "?tcs=1&ct=rto&sv=1";
     document.getElementById("contractCard").style.display="none";
     document.getElementById("refCard").style.display="none";
+    // It's in the name: a Takealot driver delivers for Mr D. Don't ask which
+    // company; ask how long he has been doing Takealot (Max, 2026-11-18).
+    document.getElementById("platformS").value="mr_d";
+    document.getElementById("platformS").style.display="none";
+    document.getElementById("platformL").style.display="none";
+    document.querySelector("#expCard h3").dataset.t="deliveryExpTk";
+    document.getElementById("durationL").dataset.t="durationQTk";
     const b=document.createElement("div");
     b.className="card"; b.style.borderColor="rgba(215,224,34,.55)";
     b.innerHTML='<h2 style="margin:0 0 6px;font-size:17px;color:var(--teal)">Takealot / Mr D driver — you are pre-vetted</h2>'
       +'<p style="margin:0 0 6px">No reference needed. Your plan: <b>R700 per week, rent-to-own over 24 months</b>, servicing by the Bike 4 U workshop included. After 24 months the bike is yours.</p>'
-      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back). A bank statement helps us but is not required — tick "I don\'t have a bank account" if you would rather not send one.</p>';
+      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back — or tick the learner\'s licence box if that is what you have). A bank statement helps us but is not required — tick "I don\'t have a bank account" if you would rather not send one.</p>';
     const cc=document.getElementById("contractCard"); cc.parentNode.insertBefore(b, cc);
   }
   if(t && state.sup){
@@ -1145,7 +1158,7 @@ async function uploadDoc(token,type,file){
       // abort after 90s so the retry flow takes over instead of hanging
       const ctl=new AbortController();
       const kill=setTimeout(()=>ctl.abort(),90000);
-      const r=await fetch(API+"?action=upload&"+(token?"t="+token:"s="+STAGE)+"&type="+type+"&name="+encodeURIComponent(f.name)+(side?"&side="+side+"&via="+(LIC.via[side]||""):""),
+      const r=await fetch(API+"?action=upload&"+(token?"t="+token:"s="+STAGE)+"&type="+type+"&name="+encodeURIComponent(f.name)+(side?"&side="+side+"&via="+(LIC.via[side]||"")+(LIC.learner?"&learner=1":""):""),
         {method:"POST",headers:{"Content-Type":docMime(f)||"application/octet-stream"},body:f,signal:ctl.signal}).finally(()=>clearTimeout(kill));
       const d=await r.json();
       if(d.ok){st.className="st ok";st.textContent=T.uploaded;return true;}
@@ -1167,7 +1180,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
   if(LIC.front) files.drivers_license=LIC.front;
   if(LIC.back) files["drivers_license__back"]=LIC.back;
   // half a licence is no licence: once one side is in, the other is required
-  if((LIC.front||LIC.back)&&!(LIC.front&&LIC.back)) return err(LIC.front?T.errLicBack:T.errLicense);
+  if(!LIC.learner&&(LIC.front||LIC.back)&&!(LIC.front&&LIC.back)) return err(LIC.front?T.errLicBack:T.errLicense);
   const nobank=document.getElementById("nobank").checked;
 
   let token=SUP&&SUP.token;
@@ -1184,7 +1197,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(natNum.length<7||natNum.length>10) return err(T.errPhone);
     let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     const refFull=v("refCC")+refNat;
-    if(!OWNERPIN && (!v("referredBy")||refNat.length<7||refNat.length>10)) return err(T.errReferral);
+    if(!OWNERPIN && !window.TK && (!v("referredBy")||refNat.length<7||refNat.length>10)) return err(T.errReferral);
     if(!CT) return err(T.errContract);
     if(CT==="rent_to_own" && !document.getElementById("tc").checked) return err(T.errTcs);
     if(CT==="rental_only" && (!document.getElementById("rfines").checked || !document.getElementById("raccid").checked)) return err(T.errRentalAcks);
@@ -1216,7 +1229,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refNat?refFull:"",ownerPin:OWNERPIN||undefined,
-      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||"")||(window.TK?"takealot":undefined),takealot:window.TK||undefined};
+      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||"")||(window.TK?"takealot":undefined),takealot:window.TK||undefined,learner:LIC.learner||undefined};
     let d;
     try{
       // 60s: the server checks WhatsApp, translates and sends the
