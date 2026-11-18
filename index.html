@@ -1017,7 +1017,7 @@ async function init(){
     b.className="card"; b.style.borderColor="rgba(215,224,34,.55)";
     b.innerHTML='<h2 style="margin:0 0 6px;font-size:17px;color:var(--teal)">Takealot / Mr D driver — you are pre-vetted</h2>'
       +'<p style="margin:0 0 6px">No reference needed. Your plan: <b>R700 per week, rent-to-own over 24 months</b>, servicing by the Bike 4 U workshop included. After 24 months the bike is yours.</p>'
-      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back — or tick the learner\'s licence box if that is what you have). A bank statement helps us but is not required — tick "I don\'t have a bank account" if you would rather not send one.</p>';
+      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back — or tick the learner\'s licence box if that is what you have). With a South African ID your bank statement is required. With a passport or asylum document it helps us but is not required — tick \"I don\'t have a bank account\" if you have none.</p>';
     const cc=document.getElementById("contractCard"); cc.parentNode.insertBefore(b, cc);
   }
   if(t && state.sup){
@@ -1088,7 +1088,13 @@ init();
 function syncPermitCard(){
   const sel=document.querySelector('select[name="idType"]'), card=document.getElementById("doc_work_permit");
   if(!sel||!card) return;
-  card.style.display = sel.value==="sa_id" ? "none" : "block";
+  const sa = sel.value==="sa_id";
+  card.style.display = sa ? "none" : "block";
+  // SA ID: bank statement always required — hide and clear the "no bank account" tick
+  const nb=document.getElementById("nobank"), nbRow=nb&&nb.closest(".check"), bank=document.getElementById("doc_bank_statement");
+  if(nb&&sa){ nb.checked=false; }
+  if(nbRow) nbRow.style.display = sa ? "none" : "";
+  if(bank&&sa) bank.style.display="block";
 }
 document.querySelector('select[name="idType"]').addEventListener("change", syncPermitCard);
 document.getElementById("nobank").addEventListener("change", e=>{
@@ -1216,7 +1222,11 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     // A South African ID holder has no asylum/work permit — the server only asks
     // for one when the ID type is passport/asylum (Takealot learner driver, 2026-11-18).
     if(idType!=="sa_id" && !files.work_permit) return err(T.errPermit);
-    if(!files.bank_statement&&!nobank&&!window.TK) return err(T.errBank);
+    // Max, 2026-11-18: a South African citizen has no excuse for not having a
+    // bank statement — required with an SA ID on every link. Passport / asylum
+    // holders keep "no bank account" and the Takealot waiver.
+    const bankWaived = idType!=="sa_id" && (nobank || window.TK);
+    if(!files.bank_statement&&!bankWaived) return err(T.errBank);
     // Visible straight away — the photo check can take a few seconds on a
     // budget phone and a frozen button reads as "hanging".
     btn.disabled=true;btn.textContent=T.checkingDocs||"Checking your documents…";
