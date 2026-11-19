@@ -938,7 +938,16 @@ async function init(){
       if (count === 0 && !waitlistOk) { el.classList.add("na"); document.getElementById(naId).style.display = "block"; }
       else { el.classList.remove("na"); document.getElementById(naId).style.display = count === 0 ? "block" : "none"; }
     }
-    if (WAITNEW) {
+    if (window.TK) {
+      // Takealot link: the plan is fixed (R700 serviced rent-to-own) and the
+      // contract card is hidden — choosing a bike must never clear it
+      // (2026-11-19: a driver who picked a bike got "select rent to own or
+      // rental" with no such choice on screen).
+      CT = "rto_serviced";
+      document.getElementById("ctServiced").classList.add("on");
+      document.getElementById("tcsOnly").style.display = "block";
+      document.getElementById("rentalOnly").style.display = "none";
+    } else if (WAITNEW) {
       CT = "rent_to_own";
       document.getElementById("ctRto").classList.add("on");
       document.getElementById("tcsOnly").style.display = "block";
@@ -1212,6 +1221,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     let refNat=v("referredByPhone").replace(/[^0-9]/g,"").replace(/^0+/,"");
     const refFull=v("refCC")+refNat;
     if(!OWNERPIN && !window.TK && (!v("referredBy")||refNat.length<7||refNat.length>10)) return err(T.errReferral);
+    if(!CT && window.TK) CT = "rto_serviced";   // belt and braces for the Takealot link
     if(!CT) return err(T.errContract);
     if(CT==="rent_to_own" && !document.getElementById("tc").checked) return err(T.errTcs);
     if(CT==="rental_only" && (!document.getElementById("rfines").checked || !document.getElementById("raccid").checked)) return err(T.errRentalAcks);
