@@ -144,6 +144,25 @@
   <h3 style="margin:0 0 4px" data-t="yourDetails"></h3>
   <label class="req" data-t="firstName"></label><input name="firstName">
   <label class="req" data-t="lastName"></label><input name="lastName">
+  <!-- Takealot link only (Max, 2026-11-21): gender, and "do you need the bike in
+       Cape Town?" — most of Takealot's list rides in Gauteng, and we only have
+       bikes in Cape Town. Both hidden unless ?tk=1. -->
+  <div id="tkQuestions" style="display:none">
+    <label class="req" data-t="genderQ"></label>
+    <select name="gender">
+      <option value="" data-t="selectOne"></option>
+      <option value="male" data-t="male"></option>
+      <option value="female" data-t="female"></option>
+    </select>
+    <label class="req" data-t="areaQ"></label>
+    <select name="area">
+      <option value="" data-t="selectOne"></option>
+      <option value="cape_town" data-t="areaCapeTown"></option>
+      <option value="gauteng" data-t="areaGauteng"></option>
+      <option value="other" data-t="areaOther"></option>
+    </select>
+    <div id="areaNo" style="display:none;margin-top:6px;font-size:13px;font-weight:700;color:#D0112B;border:1px solid rgba(208,17,43,.45);border-radius:8px;padding:8px 10px;background:rgba(208,17,43,.07)" data-t="areaNoBikes"></div>
+  </div>
   <label class="req" data-t="phone"></label>
   <div style="display:flex;gap:8px">
     <select name="phoneCC" style="flex:0 0 128px">
@@ -319,6 +338,10 @@ const I18N = {
     idNumber: "ID / Passport / Asylum number", dob: "Date of birth", dobDay: "Day", dobMonth: "Month", dobYear: "Year", address: "Home address",
     deliveryExp: "Delivery Experience", platformQ: "Which platform do you deliver for?", selectOne: "Select…",
     deliveryExpTk: "Your Takealot / Mr D experience", durationQTk: "How long have you been delivering for Takealot / Mr D?",
+    genderQ: "Are you male or female?", male: "Male", female: "Female",
+    areaQ: "Where do you need the motorcycle?", areaCapeTown: "Cape Town", areaGauteng: "Johannesburg / Pretoria (Gauteng)", areaOther: "Another province",
+    areaNoBikes: "We only have motorcycles in Cape Town. If you ride in another province we unfortunately cannot help you at this time.",
+    errGender: "Please tell us whether you are male or female.", errArea: "Please tell us where you need the motorcycle.",
     learnerOnly: "I only have a learner's licence (one side — no back to scan)", scanLearner: "Scan learner's licence", scanFrontLearner: "Your learner's licence", stepOfOne: "Step 1 of 1",
     earningsQ: "Estimated weekly earnings", durationQ: "How long have you been doing deliveries?",
     referralTitle: "Referral (REQUIRED)",
@@ -1025,9 +1048,14 @@ async function init(){
     const b=document.createElement("div");
     b.className="card"; b.style.borderColor="rgba(215,224,34,.55)";
     b.innerHTML='<h2 style="margin:0 0 6px;font-size:17px;color:var(--teal)">Takealot / Mr D driver — you are pre-vetted</h2>'
-      +'<p style="margin:0 0 6px">No reference needed. Your plan: <b>R700 per week, rent-to-own over 24 months</b>, servicing by the Bike 4 U workshop included. After 24 months the bike is yours.</p>'
-      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back — or tick the learner\'s licence box if that is what you have). With a South African ID your bank statement is required. With a passport or asylum document it helps us but is not required — tick \"I don\'t have a bank account\" if you have none.</p>';
+      +'<p style="margin:0 0 6px">No reference needed. Your plan: <b>R700 per week, rent-to-own over 24 months</b>, servicing by the Bike 4 U workshop included. After 24 months the bike is yours. <b>Our bikes are in Cape Town only.</b></p>'
+      +'<p style="margin:0;color:var(--mut);font-size:13px">Fill in your details and upload your ID or passport and your driver\'s licence (front and back — or tick the learner\'s licence box if that is what you have). With a South African ID your bank statement is required. With a passport or asylum document it helps us but is not required — tick \"I don\'t have a bank account\" if you have none. Bike 4 U checks your documents and confirms on WhatsApp.</p>';
     const cc=document.getElementById("contractCard"); cc.parentNode.insertBefore(b, cc);
+    // Gender + "where do you need the bike?" (Max, 2026-11-21): Takealot's
+    // list is mostly Gauteng; we only have bikes in Cape Town.
+    document.getElementById("tkQuestions").style.display="block";
+    const areaS=document.querySelector("select[name=area]"), areaNo=document.getElementById("areaNo");
+    areaS.addEventListener("change",()=>{ areaNo.style.display = (areaS.value && areaS.value!=="cape_town") ? "block" : "none"; });
   }
   if(t && state.sup){
     // sections = the exact list Max requested (docs / "referral" / "note").
@@ -1213,6 +1241,12 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
     if(!v("firstName")||!v("lastName")||!v("phone")||!v("email")||!v("idNumber")||!dobStr||!v("address")
        ||!v("deliveryCompany")||!v("earnings")||!v("duration"))
       return err(T.errRequired);
+    if(window.TK){
+      // Takealot link (Max, 2026-11-21): gender, and bikes are in Cape Town only.
+      if(!v("gender")) return err(T.errGender);
+      if(!v("area")) return err(T.errArea);
+      if(v("area")!=="cape_town") return err(T.areaNoBikes);
+    }
     if(!/^\S+@\S+\.\S+$/.test(v("email"))) return err(T.errEmail);
     // enforce +countrycode format (Max), default +27; strip leading 0
     let natNum=v("phone").replace(/[^0-9]/g,"").replace(/^0+/,"");
@@ -1259,7 +1293,7 @@ document.getElementById("f").addEventListener("submit", async (ev)=>{
       idType:idType,idNumber:v("idNumber"),dob:dobStr,address:v("address"),
       deliveryCompany:v("deliveryCompany"),earnings:v("earnings"),duration:v("duration"),
       referredBy:v("referredBy"),referredByPhone:refNat?refFull:"",ownerPin:OWNERPIN||undefined,
-      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||"")||(window.TK?"takealot":undefined),takealot:window.TK||undefined,learner:LIC.learner||undefined};
+      contractType:CT==="rto_serviced"?"rent_to_own":CT,serviced:CT==="rto_serviced"||undefined,weeklyRate:CT==="rent_to_own"?RATE:(CT==="rto_serviced"?850:undefined),model:WAITNEW?"Wait for new bike (next batch)":(MODEL?MODEL.name:null),waitForNew:WAITNEW||undefined,rentalAcks:CT==="rental_only"?(document.getElementById("rfines").checked&&document.getElementById("raccid").checked):undefined,noBankAccount:nobank,maintenanceAck:document.getElementById("mnt").checked,drivingAck:document.getElementById("drv").checked,special:v("special"),lang:localStorage.getItem("b4u_lang")||"en",src:(new URLSearchParams(location.search).get("src")||"")||(window.TK?"takealot":undefined),takealot:window.TK||undefined,learner:LIC.learner||undefined,gender:window.TK?v("gender"):undefined,capeTown:window.TK?(v("area")==="cape_town"):undefined};
     let d;
     try{
       // 60s: the server checks WhatsApp, translates and sends the
